@@ -30,7 +30,7 @@ A real-world Pokedex: a fully offline handheld nature scanner built for a 3-year
 
 ## Repo layout
 
-- `index.html` - SCOUT Build Console v16 (FIELD OS simulator, dashboard, CAD viewer, build plan). Served at the Pages root.
+- `index.html` - SCOUT Build Console (FIELD OS simulator, interactive 3D field sim with mobile touch controls + fullscreen, CAD viewer, build plan). Deck layout: rev 20, locked final Aug 29. Served at the Pages root.
 - `docs/field-os-design-doc.md` - FIELD OS 1.0 UX design system (rev 11): one job per screen, tokens, screen specs.
 - `docs/scout-mk1-winning-prompts.md` - the exact prompts behind the marketing render set above.
 - `assets/` - marketing renders and console screenshots.
