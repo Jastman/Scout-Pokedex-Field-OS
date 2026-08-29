@@ -796,6 +796,10 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
 #t3d-joy{display:none;position:absolute;left:16px;bottom:56px;width:104px;height:104px;border-radius:50%;background:rgba(22,30,44,.72);border:1.5px solid #5d7ba8;box-shadow:0 0 0 1px rgba(0,0,0,.6),inset 0 0 18px rgba(93,123,168,.25);z-index:6;touch-action:none}
 #t3d-joy-k{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(125,143,168,.9);border:1.5px solid #c3d2e4;box-shadow:0 1px 6px rgba(0,0,0,.55)}
 @media (pointer:coarse){#t3d-joy{display:block}}
+#t3d-view:fullscreen,#t3d-view:-webkit-full-screen{height:100%;border:none;border-radius:0}
+#t3d-view.pseudo-fs{position:fixed;inset:0;z-index:999;height:auto;border:none;border-radius:0}
+#t3d-fs{position:absolute;right:10px;top:10px;z-index:6;font-family:'PS2P',monospace;font-size:8px;letter-spacing:1px;padding:9px 11px;border-radius:6px;border:2px solid var(--edge-hi);background:rgba(6,10,14,.72);color:var(--ink);cursor:pointer;touch-action:manipulation}
+#t3d-fs:active{transform:scale(.95)}
 .t3d-hud-tl{position:absolute;left:12px;top:10px;display:flex;gap:14px;font-family:'PS2P',monospace;font-size:8px;color:var(--phos);letter-spacing:1px;pointer-events:none}
 .t3d-hud-tl span{background:rgba(0,0,0,.55);padding:5px 8px;border-radius:4px}
 .t3d-hud-br{position:absolute;right:12px;bottom:8px;font-family:'PS2P',monospace;font-size:7px;color:var(--dim);letter-spacing:1px;pointer-events:none}
@@ -865,9 +869,9 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   <header class="hdr">
     <div class="hdr-top">
       <h1 class="px">SCOUT MK-1</h1>
-      <span class="ver px">BUILD CONSOLE v3.9</span>
+      <span class="ver px">BUILD CONSOLE v4.0</span>
     </div>
-    <div class="sub">Offline field unit // Pi 5 + NVMe // no WiFi, no 4G, no accounts, no phone. Spec rev 21 &mdash; Aug 29 2026.</div>
+    <div class="sub">Offline field unit // Pi 5 + NVMe // no WiFi, no 4G, no accounts, no phone. Spec rev 22 &mdash; Aug 29 2026.</div>
   </header>
 
   <div class="console-top">
@@ -878,7 +882,7 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
     <div class="stat"><div class="k px">WEEKS DONE</div><div class="v" id="st-weeks">0<small> / 7</small></div></div>
   </div>
 
-  <button class="sim-cta" id="console-sim-cta" type="button"><span class="px">&#9654; OPEN THE FIELD OS SIMULATOR</span><span class="sim-cta-sub">REV 21 - VIRTUAL MK-1: TWO SCREENS, ONE HANDOFF - DECK CLICKS OR KEYS 1-6 + ARROWS</span></button>
+  <button class="sim-cta" id="console-sim-cta" type="button"><span class="px">&#9654; OPEN THE FIELD OS SIMULATOR</span><span class="sim-cta-sub">REV 22 - VIRTUAL MK-1: TWO SCREENS, ONE HANDOFF - DECK CLICKS OR KEYS 1-6 + ARROWS</span></button>
     <button class="loop-cta" id="console-loop-cta" type="button"><span class="px">&#9673; OPEN THE FIND LOOP</span><span class="sim-cta-sub">THE INTERACTION MODEL - ONE APP, TWO DISPLAYS, ONE HANDOFF</span></button>
   </div>
 
@@ -1076,7 +1080,7 @@ DONT: decorative vents, fake seams, glossy finishes, &gt;1 accent color</pre>
     </section>
     </div>
   <section class="sec" id="spec">
-    <div class="sec-title"><h2 class="px">01 // FULL SPEC</h2><div class="rule"></div><span class="tag px">REV 21</span></div>
+    <div class="sec-title"><h2 class="px">01 // FULL SPEC</h2><div class="rule"></div><span class="tag px">REV 22</span></div>
     <button class="spec-bar" id="spec-bar">READ THE FULL SPEC<span class="car">[+]</span></button>
     <div class="spec-wrap" id="spec-wrap"><div class="spec-body" id="spec-body"></div></div>
   </section>
@@ -1381,13 +1385,14 @@ DONT: decorative vents, fake seams, glossy finishes, &gt;1 accent color</pre>
     </div>
     <div id="tab-3d" style="display:none">
     <section class="sec" style="margin-top:0">
-      <div class="sec-title"><h2 class="px">3D FIELD SIMULATOR</h2><div class="rule"></div><span class="tag px">NEW - THE DEVICE, LIVE IN ITS WORLD</span></div>
+      <div class="sec-title"><h2 class="px">3D FIELD SIMULATOR</h2><div class="rule"></div><span class="tag px">REV 22 - MOBILE TOUCH + FULLSCREEN</span></div>
       <div class="panel" style="padding:12px">
         <div id="t3d-view">
           <div id="t3d-hint">LOADING MODEL...</div>
           <div class="t3d-hud-tl"><span id="t3d-target">TARGET: AMERICAN ROBIN</span><span id="t3d-state">LIVE</span></div>
           <div class="t3d-hud-br">JOYSTICK/ARROWS = WALK - DRAG = LOOK - TAP THE DEVICE OR A CREATURE</div>
           <div id="t3d-joy"><div id="t3d-joy-k"></div></div>
+          <button id="t3d-fs" type="button">&#x26F6; FULLSCREEN</button>
         </div>
         <div class="t3d-deck">
           <button class="t3d-btn scan" id="t3d-scan" type="button">SCAN</button>
@@ -1400,7 +1405,7 @@ DONT: decorative vents, fake seams, glossy finishes, &gt;1 accent color</pre>
           <button class="t3d-btn sc" data-3dscene="bug" type="button">BUG</button>
           <button class="t3d-btn sc" data-3dscene="audio" type="button">AUDIO</button>
         </div>
-        <div class="cad-cap">Screenbound-style: you are the kid holding the SCOUT MK-1. ARROWS/WASD walk the meadow, drag to look, and the device in your hands is fully live - the LCD glass is the real feed from the back camera, the e-ink runs the mini FIELD OS. Click the device itself: SCAN dome (or tap the LCD) freezes and saves the actual frame, LISTEN/ASK/MAP satellites, PWR slider, D-pad scrolls finds. Ten species share the scene - robin, cardinal, monarch, bee, ladybug, dandelion, fern, squirrel, a leaping bluegill in the pond, a ghost crab on the rock - and the crosshair IDs whatever is centered. ASK runs the on-device stack end to end: whisper.cpp hears (edge glow + purple voice lines), Qwen3-1.7B answers nature questions only (off-topic gets a kind no), piper reads the reply aloud over the cyan particle sphere - browser voice stands in here.</div>
+        <div class="cad-cap">Screenbound-style: you are the kid holding the SCOUT MK-1. ARROWS/WASD walk the meadow, drag to look, and the device in your hands is fully live - the LCD glass is the real feed from the back camera, the e-ink runs the mini FIELD OS. Click the device itself: SCAN dome (or tap the LCD) freezes and saves the actual frame, LISTEN/ASK/MAP satellites, PWR slider, D-pad scrolls finds. Ten species share the scene - robin, cardinal, monarch, bee, ladybug, dandelion, fern, squirrel, a leaping bluegill in the pond, a ghost crab on the rock - and the crosshair IDs whatever is centered. ASK runs the on-device stack end to end: whisper.cpp hears (edge glow + purple voice lines), Qwen3-1.7B answers nature questions only (off-topic gets a kind no), piper reads the reply aloud over the cyan particle sphere - browser voice stands in here. Rev 22 (Aug 29): the sim goes FULLSCREEN on mobile and desktop - one tap fills the whole screen with the meadow for the full Screenbound feel (native fullscreen, with a fixed-position fallback on iOS); on phones the thumb stick walks and turns, drag looks around, and every device button is tappable.</div>
       </div>
     </section>
     </div>
@@ -9338,6 +9343,26 @@ handL.traverse(o=>{o.raycast=()=>{}});handR.traverse(o=>{o.raycast=()=>{}});
   joy.addEventListener('pointermove',e=>{if(e.pointerId!==jid)return;jset(e.clientX-jcx,e.clientY-jcy);e.preventDefault()});
   joy.addEventListener('pointerup',e=>{if(e.pointerId===jid)jreset()});
   joy.addEventListener('pointercancel',e=>{if(e.pointerId===jid)jreset()});
+ }
+
+ /* rev 22: fullscreen - native Fullscreen API, fixed-position fallback for iOS Safari */
+ const fsBtn=document.getElementById('t3d-fs');
+ function sim3dResize(){const w=holder.clientWidth,h=holder.clientHeight;if(w&&h){cam.aspect=w/h;cam.updateProjectionMatrix();renderer.setSize(w,h)}}
+ function sim3dFsLabel(){if(fsBtn)fsBtn.innerHTML=(document.fullscreenElement||document.webkitFullscreenElement||holder.classList.contains('pseudo-fs'))?'&#x2715; EXIT':'&#x26F6; FULLSCREEN'}
+ if(fsBtn){
+  fsBtn.onclick=()=>{
+   if(document.fullscreenElement||document.webkitFullscreenElement||holder.classList.contains('pseudo-fs')){
+    if(document.exitFullscreen)document.exitFullscreen();else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
+    holder.classList.remove('pseudo-fs');
+   }else{
+    const rq=holder.requestFullscreen||holder.webkitRequestFullscreen;
+    if(rq){try{const p=rq.call(holder);if(p&&p.catch)p.catch(()=>{holder.classList.add('pseudo-fs');sim3dFsLabel();setTimeout(sim3dResize,60)})}catch(err){holder.classList.add('pseudo-fs')}}
+    else holder.classList.add('pseudo-fs');
+   }
+   sim3dFsLabel();setTimeout(sim3dResize,60);setTimeout(sim3dResize,400);
+  };
+  document.addEventListener('fullscreenchange',()=>{sim3dFsLabel();setTimeout(sim3dResize,60)});
+  document.addEventListener('webkitfullscreenchange',()=>{sim3dFsLabel();setTimeout(sim3dResize,60)});
  }
 
  /* ---- input: keys - arrows/WASD walk + turn, Enter select, Space shutter ---- */
