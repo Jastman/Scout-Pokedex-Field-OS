@@ -287,3 +287,21 @@ DO: one job per screen. 1-bit everything on e-ink. Icons first. Honest timings.
 DON'T: emoji. Gray on e-ink. Menus-in-menus. Typing. Touch on the LCD.
     Shadows/blur/glassmorphism. >1 accent per screen. Modals. Punishing fails.
     Any animation on e-ink. Any logo but the MK-1 mark.
+
+---
+
+## 12. THERMAL & SAFETY ADDENDUM (Claude design review, Aug 29 2026)
+
+The hardware-side thermal spec (sustained-load test, thresholds, battery topology)
+lives in the build console FULL SPEC, section 10. The UX-facing rules that touch
+this doc:
+
+- COOLING DOWN is a fail-ladder state: if temps cross the threshold, drop concurrent
+  AI HAT+ inference and show a cooling-down glyph on the e-ink - same pattern as
+  BLURRY SCAN / TOO WINDY. Never silently throttle and confuse the kid.
+- ASK LCD-wake rule: ASK wakes the LCD only if a Find card is already open or within
+  a short idle window of the last scan. Otherwise ASK is audio-only (piper reply, no
+  LCD wake) - the LCD is the hungriest state, spend it only when it earns it.
+- The 60% NOT SURE confidence threshold is a placeholder: calibrate it empirically
+  against real field test photos (motion blur, backlight, partial occlusion) and
+  document the chosen value and why.
