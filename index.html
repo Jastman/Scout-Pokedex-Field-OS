@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCOUT MK-1 // BUILD CONSOLE v16</title>
+<title>SCOUT MK-1 // BUILD CONSOLE v17</title>
 <style>
 @font-face{
   font-family:'PS2P';
@@ -791,6 +791,42 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
 .t3d-btn.sc.on{border-color:var(--phos);color:var(--phos);background:rgba(87,247,160,.08)}
 .t3d-sep{flex:0 0 1px;height:22px;background:var(--edge);margin:0 4px}
 
+
+/* ---- v2.7: mobile-first restructure (iPhone 17 Pro / 402px Chrome) ---- */
+.console-top{margin:18px 0 4px}
+.loop-cta{display:flex;flex-direction:column;gap:6px;align-items:center;width:100%;margin:10px 0 4px;padding:12px 16px;background:transparent;border:1px dashed var(--edge-hi);border-radius:10px;cursor:pointer;transition:border-color .15s}
+.loop-cta:hover{border-color:var(--hot)}
+.loop-cta .px{font-size:11px;color:var(--hot);letter-spacing:1px}
+.simview-toggle{display:flex;gap:0;margin:0 0 16px;border:2px solid var(--edge-hi);background:#05070a}
+.svbtn{flex:1;font-family:'PS2P',monospace;font-size:10px;letter-spacing:1px;padding:11px 8px;text-align:center;background:transparent;color:var(--dim);border:none;border-right:1px solid var(--edge-hi);cursor:pointer}
+.svbtn:last-child{border-right:none}
+.svbtn:hover{color:var(--ink)}
+.svbtn.on{color:var(--bg);background:var(--hot)}
+.backbtn{display:inline-block;font-family:'PS2P',monospace;font-size:9px;letter-spacing:1px;padding:9px 12px;margin:0 0 14px;background:transparent;border:1px solid var(--edge-hi);color:var(--dim);cursor:pointer}
+.backbtn:hover{color:var(--ink);border-color:var(--ink)}
+.drivers{margin:0;padding:0;list-style:none;counter-reset:drv}
+.drivers li{counter-increment:drv;position:relative;padding:12px 0 12px 46px;border-bottom:1px solid var(--edge);font-size:13px;line-height:1.6;color:#b9c9da}
+.drivers li:last-child{border-bottom:none}
+.drivers li::before{content:counter(drv,decimal-leading-zero);position:absolute;left:0;top:12px;font-family:'PS2P',monospace;font-size:11px;color:var(--phos)}
+@media (max-width:480px){
+  body{padding:12px 8px 48px}
+  .hdr h1{font-size:15px}
+  .hdr .ver{font-size:8px}
+  .sub{font-size:11px}
+  .tabbar{flex-wrap:wrap}
+  .tabbtn{flex:1 1 46%;font-size:8px;padding:11px 4px;letter-spacing:.5px;border-bottom:1px solid var(--edge-hi)}
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px}
+  .sec-title{flex-wrap:wrap;row-gap:8px}
+  .sec-title h2{white-space:normal;font-size:9px;line-height:1.7}
+  .sec-title .tag{white-space:normal}
+  .stat{padding:10px}
+  .sim-grid{grid-template-columns:1fr}
+  .sim-device{width:100%;max-width:352px;margin:0 auto}
+  .lab-grid{grid-template-columns:1fr}
+  .spec-body{padding:14px 12px;font-size:12px}
+  .panel{box-shadow:3px 3px 0 #04060a}
+  pre{white-space:pre-wrap;word-break:break-word}
+}
 </style>
 <script>window.CESIUM_BASE_URL='https://cdn.jsdelivr.net/npm/cesium@1.121/Build/Cesium/';</script>
 <link href="https://cdn.jsdelivr.net/npm/cesium@1.121/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
@@ -812,38 +848,12 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   <header class="hdr">
     <div class="hdr-top">
       <h1 class="px">SCOUT MK-1</h1>
-      <span class="ver px">BUILD CONSOLE v2.6</span>
+      <span class="ver px">BUILD CONSOLE v2.7</span>
     </div>
-    <div class="sub">Offline field unit // Pi 5 + NVMe // no WiFi, no 4G, no accounts, no phone. Spec rev 11 &mdash; Aug 28 2026.</div>
-    <div class="boot">
-      <div>&gt; BOOT SEQUENCE ........... <b>OK</b></div>
-      <div>&gt; GPS MODULE [BN-880] ...... <b class="ok">LOCKED IN</b></div>
-      <div>&gt; DEV BENCH ................ <b class="ok">ARGON ONE V3 - GPIO SLOT LIVE</b></div>
-      <div>&gt; CESIUM FIELD MAP ......... <b class="ok">ON-DEVICE // OFFLINE</b></div>
-      <div>&gt; SIMULATOR ................ <b class="ok">FIELD OS 1.0 - REV 11: PHOTOS + VOICE + MAP FIX</b></div>
-      <div>&gt; VOICE ASK ............... <b class="ok">PUSH-TO-TALK - TODDLER-TUNED ON-DEVICE STT</b></div>
-      <div>&gt; OS PRINCIPLE ............ <b class="ok">LCD = CAMERA + FIND PHOTOS + ASK VOICE (rev 11) - E-INK = THE DEVICE</b></div>
-      <div>&gt; CAD MODEL ............... <b class="ok">LAYOUT A - 3D VIEWER + FILES IN CAD TAB</b></div>
-      <div>&gt; OPEN DECISIONS ........... <b>0</b> &mdash; LAYOUT A LOCKED (KID GRIP) - SHOULDER BTNS OUT - NAME: SCOUT MK-1</div>
-    </div>
+    <div class="sub">Offline field unit // Pi 5 + NVMe // no WiFi, no 4G, no accounts, no phone. Spec rev 11 &mdash; Aug 29 2026.</div>
   </header>
 
-  <nav class="tabbar">
-    <button class="tabbtn on" id="tabbtn-console">&#9658; BUILD CONSOLE</button>
-    <button class="tabbtn" id="tabbtn-parts">&#9776; PARTS</button>
-    <button class="tabbtn" id="tabbtn-plan">&#9204; BUILD PLAN</button>
-    <button class="tabbtn" id="tabbtn-design">&#10022; DESIGN</button>
-    <button class="tabbtn" id="tabbtn-loop">&#9673; FIND LOOP</button>
-    <button class="tabbtn" id="tabbtn-sim">&#9654; SIMULATOR</button>
-    <button class="tabbtn" id="tabbtn-3d">&#9670; 3D SIM</button>
-    <button class="tabbtn" id="tabbtn-blueprint">&#9672; BLUEPRINT</button>
-    <button class="tabbtn" id="tabbtn-lab">&#9707; LAYOUT LAB</button>
-    <button class="tabbtn" id="tabbtn-cad">&#9711; CAD</button>
-  </nav>
-
-  <!-- ================= TAB 1 : BUILD CONSOLE ================= -->
-  <div class="tabpage on" id="tab-console">
-
+  <div class="console-top">
   <div class="stats">
     <div class="stat"><div class="k px">PARTS ACQUIRED</div><div class="v" id="st-count">0<small> / 12</small></div></div>
     <div class="stat"><div class="k px">SPENT SO FAR</div><div class="v" id="st-spent">$0</div></div>
@@ -852,27 +862,16 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   </div>
 
   <button class="sim-cta" id="console-sim-cta" type="button"><span class="px">&#9654; OPEN THE FIELD OS SIMULATOR</span><span class="sim-cta-sub">REV 11 - VIRTUAL MK-1: TWO SCREENS, ONE HANDOFF - DECK CLICKS OR KEYS 1-6 + ARROWS</span></button>
-
-  <section class="sec" id="spec">
-    <div class="sec-title"><h2 class="px">01 // FULL SPEC</h2><div class="rule"></div><span class="tag px">REV 9</span></div>
-    <button class="spec-bar" id="spec-bar">READ THE FULL SPEC<span class="car">[+]</span></button>
-    <div class="spec-wrap" id="spec-wrap"><div class="spec-body" id="spec-body"></div></div>
-  </section>
-
-  <footer class="foot">
-    <h2 class="px">02 // SOURCES &amp; REFERENCE</h2>
-    <ul>
-      <li><a href="https://github.com/CesiumGS/cesium/blob/main/Documentation/OfflineGuide/README.md">CesiumJS Offline Guide</a></li>
-      <li><a href="https://github.com/balena-io-experimental/browser/issues/172">Pi 5 kiosk WebGL (chromium build matters)</a></li>
-      <li><a href="https://gpsd.gitlab.io/gpsd/">gpsd - Linux GPS daemon</a></li>
-      <li><a href="https://www.raspberrypi.com/products/raspberry-pi-5/">Raspberry Pi 5</a></li>
-      <li><a href="https://www.waveshare.com/product/max-m8q-gnss-hat.htm">Waveshare MAX-M8Q GNSS HAT (HAT alt)</a></li>
-      <li><a href="https://www.sparkfun.com/raspberry-pi-ai-hat-13-tops.html">Raspberry Pi AI HAT+ 13 TOPS</a></li>
-    </ul>
-    <div class="note">Checklist state saves to this browser (localStorage). Single file, no network calls - same offline rules as the device.</div>
-    <button class="reset" id="reset">RESET ALL PROGRESS</button>
-  </footer>
+    <button class="loop-cta" id="console-loop-cta" type="button"><span class="px">&#9673; OPEN THE FIND LOOP</span><span class="sim-cta-sub">THE INTERACTION MODEL - ONE APP, TWO DISPLAYS, ONE HANDOFF</span></button>
   </div>
+
+  <nav class="tabbar">
+    <button class="tabbtn on" id="tabbtn-plan">&#9204; BUILD PLAN</button>
+    <button class="tabbtn" id="tabbtn-parts">&#9776; PARTS LIST</button>
+    <button class="tabbtn" id="tabbtn-sim">&#9654; SIMULATOR</button>
+    <button class="tabbtn" id="tabbtn-design">&#10022; DESIGN SPECS &amp; PHILOSOPHY</button>
+  </nav>
+
 
   <!-- ================= TAB : PARTS CHECKLIST ================= -->
   <div class="tabpage" id="tab-parts">
@@ -892,7 +891,7 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   </div>
 
   <!-- ================= TAB : BUILD PLAN ================= -->
-  <div class="tabpage" id="tab-plan">
+  <div class="tabpage on" id="tab-plan">
     <section class="sec" id="plan">
     <div class="sec-title"><h2 class="px">01 // WEEKLY BUILD PLAN</h2><div class="rule"></div><span class="tag px">TAP A WEEK FOR THE STEP-BY-STEP</span></div>
     <div class="panel" style="margin-bottom:16px">
@@ -907,6 +906,18 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   <!-- ================= TAB : DESIGN LANGUAGE ================= -->
   <div class="tabpage" id="tab-design">
     <section class="sec" style="margin-top:0">
+      <div class="sec-title"><h2 class="px">THE 5 DESIGN DRIVERS</h2><div class="rule"></div><span class="tag px">JAKE - AUG 29 2026</span></div>
+      <div class="panel loop-panel">
+        <ol class="drivers">
+          <li>Fully offline, dedicated use case device - does one thing and one thing well (nature recognition)</li>
+          <li>On device, fine tuned LLM</li>
+          <li>Portable, handheld</li>
+          <li>Should encourage exploration and looking at the real world, not a device. Should be audio first whenever possible</li>
+          <li>Fun/playful to use - makes learning and exploration fun. Inspires the design as well: the semi-transparent shell, with design inspiration from Teenage Engineering</li>
+        </ol>
+      </div>
+    </section>
+    <section class="sec">
       <div class="sec-title"><h2 class="px">DESIGN LANGUAGE - FIELD UNIT 01</h2><div class="rule"></div><span class="tag px">SECOND PASS - LOCKED AUG 27</span></div>
       <div class="panel loop-panel">
         <h3>THE BRIEF</h3>
@@ -977,10 +988,83 @@ DO: one signature move, honest construction, visible machine, dense grid-true la
 DONT: decorative vents, fake seams, glossy finishes, &gt;1 accent color</pre>
       </div>
     </section>
+    <div id="tab-blueprint">
+    <section class="sec" style="margin-top:0">
+      <div class="sec-title"><h2 class="px">INTERACTIVE SCHEMATIC</h2><div class="rule"></div><span class="tag px">TAP A PART</span></div>
+      <div class="bp-grid">
+        <div class="bp-stage">
+          <div class="bp-views">
+            <button class="bp-vbtn on" id="bpv-front">FRONT</button>
+            <button class="bp-vbtn" id="bpv-back">BACK</button>
+            <button class="bp-vbtn" id="bpv-xray">X-RAY + SECTION</button>
+            <span style="flex:1"></span>
+            <button class="bp-vbtn on" id="bpl-A">A: STACKED</button>
+            <button class="bp-vbtn" id="bpl-B">B: SLAB</button>
+          </div>
+          <div id="bp-holder"></div>
+          <div class="bp-legend">
+            <i style="background:var(--hot)"></i>data / signal &nbsp;&nbsp;
+            <i style="background:var(--phos)"></i>power &nbsp;&nbsp;
+            <i style="background:var(--magenta)"></i>rf / gps sky path &nbsp;&nbsp;
+            <i style="background:var(--amber)"></i>i2c bus
+          </div>
+        </div>
+        <div class="bp-detail" id="bp-detail"></div>
+      </div>
+    </section>
+    </div>
+    <div id="tab-cad">
+    <section class="sec" style="margin-top:0">
+      <div class="sec-title"><h2 class="px">CAD MODEL - LAYOUT A</h2><div class="rule"></div><span class="tag px">DRAG TO ORBIT - SCROLL TO ZOOM - LAYOUT LOCKED AUG 27</span></div>
+      <div class="panel" style="padding:12px">
+        <div id="cad-view">
+          <div id="cad-hint">LOADING MODEL...</div>
+          <div id="cad-vfhud">LAYOUT A - 135 x 290 x 45 MM - CONCEPT CAD (NO TOLERANCES YET)</div>
+        </div>
+        <div class="cad-cap">Layout A is the locked direction (kid grip won the hold test, Aug 27). Built headless in Blender 4.2: 90+ objects in 7 named collections, 25 materials, real mm scale. Orbit in and look through the ghosted smoke shell - both screens (the LCD glass is non-touch, rev 8), the v7 deck (D-pad + SELECT center, 60mm SCAN dome with the cyan LISTEN sub-button at its bottom-right, ASK/MAP along the bottom - respaced smaller and clear of the e-ink), the PWR slide on the TOP edge, Torx corners, top-edge mic ports, and the full internal stack (Pi 5, NVMe, UPS HAT, GPS, 6x 21700 in two rows of three). Rev 9 geometry fixes (Aug 27): the camera bump now protrudes from the BACK face (it was built inside-out, sunk into the shell) and the LISTEN sub-button moved clear of the SCAN dome ring so the two read as distinct controls. Concept CAD, not engineering CAD: no tolerances or snap-fits until the case-CAD pass, which now starts on Layout A. Rev 11 hardware adds (Jake, Aug 28): speaker grille + MAX98357A, VOL rocker on the top edge, and the USB-C charge port confirmed on the bottom edge through the UPS HAT - geometry regen lands with the 3D simulator pass.</div>
+      </div>
+      <div class="panel">
+        <h3>FILES - OPEN IN BLENDER / REBUILD FROM SOURCE</h3>
+        <div class="cad-files">
+          <a class="cad-file" id="cad-dl-blend" download="scout-mk1-layoutA.blend"><b>SCOUT-MK-1-LAYOUTA.BLEND</b><span>Blender 4.2 (free) - assembled model, 7 named collections, build script embedded as a text block - rev 9 geometry (camera bump out, LISTEN clear of the dome)</span><i>2.6 MB</i></a>
+          <a class="cad-file" id="cad-dl-blendx" download="scout-mk1-layoutA-exploded.blend"><b>SCOUT-MK-1-LAYOUTA-EXPLODED.BLEND</b><span>Same model, pre-exploded along the depth axis for inspecting the stack - rev 9 geometry</span><i>2.6 MB</i></a>
+          <a class="cad-file" id="cad-dl-glb" download="scout-mk1-layoutA.glb"><b>SCOUT-MK-1-LAYOUTA.GLB</b><span>Portable glTF binary - imports into anything; this is the exact file the viewer above renders</span><i>2.4 MB</i></a>
+          <a class="cad-file" id="cad-dl-py" download="build_scout.py"><b>BUILD_SCOUT.PY</b><span>The full parametric build script - every dimension is a variable at the top; edit numbers, re-run in Blender - rev 9</span><i>21 KB</i></a>
+        </div>
+      </div>
+    </section>
+    </div>
+  <section class="sec" id="spec">
+    <div class="sec-title"><h2 class="px">01 // FULL SPEC</h2><div class="rule"></div><span class="tag px">REV 9</span></div>
+    <button class="spec-bar" id="spec-bar">READ THE FULL SPEC<span class="car">[+]</span></button>
+    <div class="spec-wrap" id="spec-wrap"><div class="spec-body" id="spec-body"></div></div>
+  </section>
+    <section class="sec">
+      <div class="sec-title"><h2 class="px">ARCHIVE</h2><div class="rule"></div><span class="tag px">SHELVED - NOT DELETED</span></div>
+      <div class="panel loop-panel">
+        <h3>LAYOUT LAB - 1:1 PRINT CUTOUTS</h3>
+        <p>The printable true-size shell cutouts from the layout decision (Layout A vs B, letter paper). Kept for the record.</p>
+        <button class="backbtn" id="lab-open" type="button" style="margin:6px 0 0">OPEN THE LAYOUT LAB &#9656;</button>
+      </div>
+    </section>
+  <footer class="foot">
+    <h2 class="px">02 // SOURCES &amp; REFERENCE</h2>
+    <ul>
+      <li><a href="https://github.com/CesiumGS/cesium/blob/main/Documentation/OfflineGuide/README.md">CesiumJS Offline Guide</a></li>
+      <li><a href="https://github.com/balena-io-experimental/browser/issues/172">Pi 5 kiosk WebGL (chromium build matters)</a></li>
+      <li><a href="https://gpsd.gitlab.io/gpsd/">gpsd - Linux GPS daemon</a></li>
+      <li><a href="https://www.raspberrypi.com/products/raspberry-pi-5/">Raspberry Pi 5</a></li>
+      <li><a href="https://www.waveshare.com/product/max-m8q-gnss-hat.htm">Waveshare MAX-M8Q GNSS HAT (HAT alt)</a></li>
+      <li><a href="https://www.sparkfun.com/raspberry-pi-ai-hat-13-tops.html">Raspberry Pi AI HAT+ 13 TOPS</a></li>
+    </ul>
+    <div class="note">Checklist state saves to this browser (localStorage). Single file, no network calls - same offline rules as the device.</div>
+    <button class="reset" id="reset">RESET ALL PROGRESS</button>
+  </footer>
   </div>
 
   <!-- ================= TAB : FIND LOOP (INTERACTION MODEL) ================= -->
   <div class="tabpage" id="tab-loop">
+    <button class="backbtn" data-back="plan" type="button">&#9666; BACK TO BUILD PLAN</button>
     <section class="sec" style="margin-top:0">
       <div class="sec-title"><h2 class="px">INTERACTION MODEL</h2><div class="rule"></div><span class="tag px">ONE APP - TWO DISPLAYS - ONE HANDOFF</span></div>
       <div class="panel loop-panel">
@@ -1103,6 +1187,11 @@ DONT: decorative vents, fake seams, glossy finishes, &gt;1 accent color</pre>
 
   <!-- ================= TAB : SIMULATOR ================= -->
   <div class="tabpage" id="tab-sim">
+    <div class="simview-toggle">
+      <button class="svbtn on" id="mode-2d" type="button">&#9654; 2D SIM</button>
+      <button class="svbtn" id="mode-3d" type="button">&#9670; 3D SIM</button>
+    </div>
+    <div id="sim-view-2d">
     <section class="sec" style="margin-top:0">
       <div class="sec-title"><h2 class="px">SIMULATOR - VIRTUAL MK-1</h2><div class="rule"></div><span class="tag px">REV 11: REAL FIND PHOTOS - LCD PHOTO VIEWER + ASK VOICE UI - MAP LAYER FIX - AUDIO HARDWARE</span></div>
       <div class="sim-grid">
@@ -1247,38 +1336,37 @@ DONT: decorative vents, fake seams, glossy finishes, &gt;1 accent color</pre>
         </div>
       </div>
     </section>
-  </div>
-
-
-  <!-- ================= TAB 2 : BLUEPRINT ================= -->
-  <div class="tabpage" id="tab-blueprint">
+    </div>
+    <div id="tab-3d" style="display:none">
     <section class="sec" style="margin-top:0">
-      <div class="sec-title"><h2 class="px">INTERACTIVE SCHEMATIC</h2><div class="rule"></div><span class="tag px">TAP A PART</span></div>
-      <div class="bp-grid">
-        <div class="bp-stage">
-          <div class="bp-views">
-            <button class="bp-vbtn on" id="bpv-front">FRONT</button>
-            <button class="bp-vbtn" id="bpv-back">BACK</button>
-            <button class="bp-vbtn" id="bpv-xray">X-RAY + SECTION</button>
-            <span style="flex:1"></span>
-            <button class="bp-vbtn on" id="bpl-A">A: STACKED</button>
-            <button class="bp-vbtn" id="bpl-B">B: SLAB</button>
-          </div>
-          <div id="bp-holder"></div>
-          <div class="bp-legend">
-            <i style="background:var(--hot)"></i>data / signal &nbsp;&nbsp;
-            <i style="background:var(--phos)"></i>power &nbsp;&nbsp;
-            <i style="background:var(--magenta)"></i>rf / gps sky path &nbsp;&nbsp;
-            <i style="background:var(--amber)"></i>i2c bus
-          </div>
+      <div class="sec-title"><h2 class="px">3D FIELD SIMULATOR</h2><div class="rule"></div><span class="tag px">NEW - THE DEVICE, LIVE IN ITS WORLD</span></div>
+      <div class="panel" style="padding:12px">
+        <div id="t3d-view">
+          <div id="t3d-hint">LOADING MODEL...</div>
+          <div class="t3d-hud-tl"><span id="t3d-target">TARGET: AMERICAN ROBIN</span><span id="t3d-state">LIVE</span></div>
+          <div class="t3d-hud-br">ARROWS = WALK + TURN - DRAG = LOOK - CLICK THE DEVICE OR A CREATURE</div>
         </div>
-        <div class="bp-detail" id="bp-detail"></div>
+        <div class="t3d-deck">
+          <button class="t3d-btn scan" id="t3d-scan" type="button">SCAN</button>
+          <button class="t3d-btn listen" id="t3d-listen" type="button">LISTEN</button>
+          <button class="t3d-btn ask" id="t3d-ask" type="button">ASK</button>
+          <button class="t3d-btn pwr" id="t3d-pwr" type="button">PWR</button>
+          <span class="t3d-sep"></span>
+          <button class="t3d-btn sc on" data-3dscene="animal" type="button">ANIMAL</button>
+          <button class="t3d-btn sc" data-3dscene="plant" type="button">PLANT</button>
+          <button class="t3d-btn sc" data-3dscene="bug" type="button">BUG</button>
+          <button class="t3d-btn sc" data-3dscene="audio" type="button">AUDIO</button>
+        </div>
+        <div class="cad-cap">Screenbound-style: you are the kid holding the SCOUT MK-1. ARROWS/WASD walk the meadow, drag to look, and the device in your hands is fully live - the LCD glass is the real feed from the back camera, the e-ink runs the mini FIELD OS. Click the device itself: SCAN dome (or tap the LCD) freezes and saves the actual frame, LISTEN/ASK/MAP satellites, PWR slider, D-pad scrolls finds. Ten species share the scene - robin, cardinal, monarch, bee, ladybug, dandelion, fern, squirrel, a leaping bluegill in the pond, a ghost crab on the rock - and the crosshair IDs whatever is centered. ASK runs the on-device stack end to end: whisper.cpp hears (edge glow + purple voice lines), Qwen3-1.7B answers nature questions only (off-topic gets a kind no), piper reads the reply aloud over the cyan particle sphere - browser voice stands in here.</div>
       </div>
     </section>
+    </div>
   </div>
+
 
   <!-- ================= TAB 3 : LAYOUT LAB ================= -->
   <div class="tabpage" id="tab-lab">
+    <button class="backbtn" data-back="design" type="button">&#9666; BACK TO DESIGN SPECS</button>
     <section class="sec" style="margin-top:0">
       <div class="sec-title"><h2 class="px">LAYOUT LAB</h2><div class="rule"></div><span class="tag px">LAYOUT A LOCKED AUG 27 - KID GRIP WINS - B KEPT FOR THE RECORD</span></div>
       <div class="lab-grid">
@@ -1330,52 +1418,7 @@ DONT: decorative vents, fake seams, glossy finishes, &gt;1 accent color</pre>
 
 </div>
 
-  <!-- ================= TAB : CAD MODEL ================= -->
-  <div class="tabpage" id="tab-3d">
-    <section class="sec" style="margin-top:0">
-      <div class="sec-title"><h2 class="px">3D FIELD SIMULATOR</h2><div class="rule"></div><span class="tag px">NEW - THE DEVICE, LIVE IN ITS WORLD</span></div>
-      <div class="panel" style="padding:12px">
-        <div id="t3d-view">
-          <div id="t3d-hint">LOADING MODEL...</div>
-          <div class="t3d-hud-tl"><span id="t3d-target">TARGET: AMERICAN ROBIN</span><span id="t3d-state">LIVE</span></div>
-          <div class="t3d-hud-br">ARROWS = WALK + TURN - DRAG = LOOK - CLICK THE DEVICE OR A CREATURE</div>
-        </div>
-        <div class="t3d-deck">
-          <button class="t3d-btn scan" id="t3d-scan" type="button">SCAN</button>
-          <button class="t3d-btn listen" id="t3d-listen" type="button">LISTEN</button>
-          <button class="t3d-btn ask" id="t3d-ask" type="button">ASK</button>
-          <button class="t3d-btn pwr" id="t3d-pwr" type="button">PWR</button>
-          <span class="t3d-sep"></span>
-          <button class="t3d-btn sc on" data-3dscene="animal" type="button">ANIMAL</button>
-          <button class="t3d-btn sc" data-3dscene="plant" type="button">PLANT</button>
-          <button class="t3d-btn sc" data-3dscene="bug" type="button">BUG</button>
-          <button class="t3d-btn sc" data-3dscene="audio" type="button">AUDIO</button>
-        </div>
-        <div class="cad-cap">Screenbound-style: you are the kid holding the SCOUT MK-1. ARROWS/WASD walk the meadow, drag to look, and the device in your hands is fully live - the LCD glass is the real feed from the back camera, the e-ink runs the mini FIELD OS. Click the device itself: SCAN dome (or tap the LCD) freezes and saves the actual frame, LISTEN/ASK/MAP satellites, PWR slider, D-pad scrolls finds. Ten species share the scene - robin, cardinal, monarch, bee, ladybug, dandelion, fern, squirrel, a leaping bluegill in the pond, a ghost crab on the rock - and the crosshair IDs whatever is centered. ASK runs the on-device stack end to end: whisper.cpp hears (edge glow + purple voice lines), Qwen3-1.7B answers nature questions only (off-topic gets a kind no), piper reads the reply aloud over the cyan particle sphere - browser voice stands in here.</div>
-      </div>
-    </section>
-  </div>
-  <div class="tabpage" id="tab-cad">
-    <section class="sec" style="margin-top:0">
-      <div class="sec-title"><h2 class="px">CAD MODEL - LAYOUT A</h2><div class="rule"></div><span class="tag px">DRAG TO ORBIT - SCROLL TO ZOOM - LAYOUT LOCKED AUG 27</span></div>
-      <div class="panel" style="padding:12px">
-        <div id="cad-view">
-          <div id="cad-hint">LOADING MODEL...</div>
-          <div id="cad-vfhud">LAYOUT A - 135 x 290 x 45 MM - CONCEPT CAD (NO TOLERANCES YET)</div>
-        </div>
-        <div class="cad-cap">Layout A is the locked direction (kid grip won the hold test, Aug 27). Built headless in Blender 4.2: 90+ objects in 7 named collections, 25 materials, real mm scale. Orbit in and look through the ghosted smoke shell - both screens (the LCD glass is non-touch, rev 8), the v7 deck (D-pad + SELECT center, 60mm SCAN dome with the cyan LISTEN sub-button at its bottom-right, ASK/MAP along the bottom - respaced smaller and clear of the e-ink), the PWR slide on the TOP edge, Torx corners, top-edge mic ports, and the full internal stack (Pi 5, NVMe, UPS HAT, GPS, 6x 21700 in two rows of three). Rev 9 geometry fixes (Aug 27): the camera bump now protrudes from the BACK face (it was built inside-out, sunk into the shell) and the LISTEN sub-button moved clear of the SCAN dome ring so the two read as distinct controls. Concept CAD, not engineering CAD: no tolerances or snap-fits until the case-CAD pass, which now starts on Layout A. Rev 11 hardware adds (Jake, Aug 28): speaker grille + MAX98357A, VOL rocker on the top edge, and the USB-C charge port confirmed on the bottom edge through the UPS HAT - geometry regen lands with the 3D simulator pass.</div>
-      </div>
-      <div class="panel">
-        <h3>FILES - OPEN IN BLENDER / REBUILD FROM SOURCE</h3>
-        <div class="cad-files">
-          <a class="cad-file" id="cad-dl-blend" download="scout-mk1-layoutA.blend"><b>SCOUT-MK-1-LAYOUTA.BLEND</b><span>Blender 4.2 (free) - assembled model, 7 named collections, build script embedded as a text block - rev 9 geometry (camera bump out, LISTEN clear of the dome)</span><i>2.6 MB</i></a>
-          <a class="cad-file" id="cad-dl-blendx" download="scout-mk1-layoutA-exploded.blend"><b>SCOUT-MK-1-LAYOUTA-EXPLODED.BLEND</b><span>Same model, pre-exploded along the depth axis for inspecting the stack - rev 9 geometry</span><i>2.6 MB</i></a>
-          <a class="cad-file" id="cad-dl-glb" download="scout-mk1-layoutA.glb"><b>SCOUT-MK-1-LAYOUTA.GLB</b><span>Portable glTF binary - imports into anything; this is the exact file the viewer above renders</span><i>2.4 MB</i></a>
-          <a class="cad-file" id="cad-dl-py" download="build_scout.py"><b>BUILD_SCOUT.PY</b><span>The full parametric build script - every dimension is a variable at the top; edit numbers, re-run in Blender - rev 9</span><i>21 KB</i></a>
-        </div>
-      </div>
-    </section>
-  </div>
+
 
 <script>
 
@@ -1830,25 +1873,36 @@ function el(t,c,html){const e=document.createElement(t);if(c)e.className=c;if(ht
 
 /* ---- tabs ---- */
 function setTab(name){
-  ['console','parts','plan','design','loop','sim','3d','blueprint','lab','cad'].forEach(n=>{
-    document.getElementById('tab-'+n).classList.toggle('on',name===n);
-    document.getElementById('tabbtn-'+n).classList.toggle('on',name===n);
+  if(name==='console')name='plan';
+  if(name==='3d'){setTab('sim');simMode('3d');return}
+  if(name==='cad'||name==='blueprint')name='design';
+  ['plan','parts','sim','design','loop','lab'].forEach(n=>{
+    const pg=document.getElementById('tab-'+n);if(pg)pg.classList.toggle('on',name===n);
+    const bt=document.getElementById('tabbtn-'+n);if(bt)bt.classList.toggle('on',name===n);
   });
-  if(name==='3d'&&window.sim3dInit)sim3dInit();
-  if(name==='blueprint')bpShow(bpView);
-  if(name==='cad'&&window.cadInit)cadInit();
+  if(name==='design'){bpShow(bpView);if(window.cadInit)cadInit()}
 }
-document.getElementById('tabbtn-console').onclick=()=>setTab('console');
-document.getElementById('tabbtn-design').onclick=()=>setTab('design');
-document.getElementById('tabbtn-loop').onclick=()=>setTab('loop');
-document.getElementById('tabbtn-sim').onclick=()=>setTab('sim');
-document.getElementById('tabbtn-3d').onclick=()=>setTab('3d');
-document.getElementById('console-sim-cta').onclick=()=>setTab('sim');
-document.getElementById('tabbtn-blueprint').onclick=()=>setTab('blueprint');
-document.getElementById('tabbtn-lab').onclick=()=>setTab('lab');
-document.getElementById('tabbtn-parts').onclick=()=>setTab('parts');
+let simView='2d';
+function simMode(m){
+  simView=m;
+  const v2=document.getElementById('sim-view-2d'),v3=document.getElementById('tab-3d');
+  if(v2)v2.style.display=(m==='2d')?'':'none';
+  if(v3){v3.style.display=(m==='3d')?'block':'none';v3.classList.toggle('on',m==='3d')}
+  const b2=document.getElementById('mode-2d'),b3=document.getElementById('mode-3d');
+  if(b2)b2.classList.toggle('on',m==='2d');
+  if(b3)b3.classList.toggle('on',m==='3d');
+  if(m==='3d'&&window.sim3dInit)sim3dInit();
+}
 document.getElementById('tabbtn-plan').onclick=()=>setTab('plan');
-document.getElementById('tabbtn-cad').onclick=()=>setTab('cad');
+document.getElementById('tabbtn-parts').onclick=()=>setTab('parts');
+document.getElementById('tabbtn-sim').onclick=()=>{setTab('sim');simMode(simView)};
+document.getElementById('tabbtn-design').onclick=()=>setTab('design');
+document.getElementById('console-sim-cta').onclick=()=>{setTab('sim');simMode('2d')};
+document.getElementById('console-loop-cta').onclick=()=>setTab('loop');
+document.getElementById('mode-2d').onclick=()=>simMode('2d');
+document.getElementById('mode-3d').onclick=()=>simMode('3d');
+document.querySelectorAll('.backbtn').forEach(b=>b.onclick=()=>setTab(b.dataset.back||'plan'));
+document.getElementById('lab-open').onclick=()=>setTab('lab');
 function routeHash(){
   const h=location.hash;
   if(h==='#design')setTab('design');
@@ -3437,6 +3491,7 @@ function simInit(){
  document.addEventListener('keydown',e=>{
   if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'))return;
   if(!document.getElementById('tab-sim').classList.contains('on'))return;
+  if(document.getElementById('tab-3d').classList.contains('on'))return;
   if(e.key>='1'&&e.key<='6')simBtn(+e.key);
   else if(e.key==='ArrowUp'){e.preventDefault();simDpad('u')}else if(e.key==='ArrowDown'){e.preventDefault();simDpad('d')}
   else if(e.key==='ArrowLeft'){simDpad('l')}else if(e.key==='ArrowRight'){simDpad('r')}
@@ -9734,7 +9789,7 @@ function sim3dEk(mode){
   setTab('cad');
   const cap=document.createElement('style');
   cap.textContent='#cad-view{position:fixed;inset:0;z-index:9999;height:auto;border-radius:0}'
-   +'body>*:not(#tab-cad){visibility:hidden}'
+   +'body>*:not(.wrap){visibility:hidden}.wrap>*:not(#tab-design){visibility:hidden}#tab-design>*:not(#tab-cad){visibility:hidden}'
    +'#tab-cad .sec-title,.cad-side{display:none}';
   document.head.appendChild(cap);
   setTimeout(()=>dispatchEvent(new Event('resize')),400);
@@ -9751,7 +9806,7 @@ function sim3dEk(mode){
   /* studio hero renders: the v15 device alone, studio lighting, seamless dark backdrop */
   setTab('cad');
   const cap=document.createElement('style');
-  cap.textContent='#cad-view{position:fixed;inset:0;z-index:9999;height:auto;border-radius:0}body>*:not(#tab-cad){visibility:hidden}#tab-cad .sec-title,.cad-side,#cad-vfhud,.cad-cap{display:none}';
+  cap.textContent='#cad-view{position:fixed;inset:0;z-index:9999;height:auto;border-radius:0}body>*:not(.wrap){visibility:hidden}.wrap>*:not(#tab-design){visibility:hidden}#tab-design>*:not(#tab-cad){visibility:hidden}#tab-cad .sec-title,.cad-side,#cad-vfhud,.cad-cap{display:none}';
   document.head.appendChild(cap);
   setTimeout(()=>dispatchEvent(new Event('resize')),400);
   const shot=s.slice(7);
@@ -9790,7 +9845,7 @@ function sim3dEk(mode){
   /* capture mode: viewport fills the frame, no console chrome, readable TARGET label */
   const cap=document.createElement('style');
   cap.textContent='#t3d-view{position:fixed;inset:0;z-index:9999;height:auto;border-radius:0}'
-   +'body>*:not(#tab-3d){visibility:hidden}'
+   +'body>*:not(.wrap){visibility:hidden}.wrap>*:not(#tab-sim){visibility:hidden}#tab-sim>*:not(#tab-3d){visibility:hidden}'
    +'.t3d-hud-tl{left:16px;top:14px;font-size:14px;gap:18px}'
    +'.t3d-hud-tl span{padding:8px 12px}'
    +'.t3d-hud-br{font-size:11px}'
@@ -9816,7 +9871,7 @@ function sim3dEk(mode){
   setTab('cad');
   const cap=document.createElement('style');
   cap.textContent='#cad-view{position:fixed;inset:0;z-index:9999;height:auto;border-radius:0;background:#b8bcc2}'
-   +'body>*:not(#tab-cad){visibility:hidden}'
+   +'body>*:not(.wrap){visibility:hidden}.wrap>*:not(#tab-design){visibility:hidden}#tab-design>*:not(#tab-cad){visibility:hidden}'
    +'#tab-cad .sec-title,.cad-side,#cad-hint{display:none}';
   document.head.appendChild(cap);
   setTimeout(()=>dispatchEvent(new Event('resize')),400);
