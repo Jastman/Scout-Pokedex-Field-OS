@@ -1,0 +1,15 @@
+[project]
+name = "fieldos"
+version = "0.1.0"
+description = "FIELD OS - the SCOUT MK-1 offline nature scanner software"
+requires-python = ">=3.13"
+# Runtime deps arrive per build week (W2: tflite-runtime/onnxruntime, BirdNET;
+# W3: llama-cpp-python, whisper.cpp bindings, gpsd client; W4: gpiozero/pigpio,
+# Waveshare e-ink lib, piper). Keep the venv in ~/scout on the bench Pi.
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

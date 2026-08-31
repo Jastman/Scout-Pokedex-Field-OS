@@ -44,6 +44,16 @@ a{color:var(--hot)}
 .hdr h1{font-size:26px;color:var(--phos);letter-spacing:1px;text-shadow:0 0 12px rgba(87,247,160,.5),2px 2px 0 #06281a}
 .hdr .ver{font-size:9px;color:var(--amber);border:1px solid var(--amber);padding:3px 7px}
 .hdr .sub{color:var(--dim);font-size:12px;margin-top:10px}
+.ss{margin-top:14px;border:1px solid var(--edge);background:#080b10;padding:10px 14px}
+.ss-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.ss-label{font-size:8px;color:var(--dim);letter-spacing:1px}
+.ss-phase{font-size:10px;color:var(--phos);letter-spacing:1px}
+.ss-state{font-size:8px;padding:3px 7px;border:1px solid var(--amber);color:var(--amber);letter-spacing:1px}
+.ss-sync{margin-left:auto;font-size:9px;color:var(--dim)}
+.ss-bar{margin-top:8px;height:6px;background:#0d1420;border:1px solid var(--edge)}
+.ss-bar i{display:block;height:100%;width:0;background:var(--phos);box-shadow:0 0 10px rgba(87,247,160,.5);transition:width .5s}
+.ss-detail{margin-top:8px;font-size:11.5px;color:var(--ink);line-height:1.5}
+.save-note{margin:-14px 2px 22px;font-size:8px;color:var(--dim);letter-spacing:1px;text-align:right}
 .boot{margin-top:14px;font-size:11.5px;color:var(--dim)}
 .boot b{color:var(--phos);font-weight:400}
 .boot .ok{color:var(--hot)}
@@ -869,18 +879,24 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   <header class="hdr">
     <div class="hdr-top">
       <h1 class="px">SCOUT MK-1</h1>
-      <span class="ver px">BUILD CONSOLE v4.2</span>
+      <span class="ver px">BUILD CONSOLE v4.3</span>
     </div>
     <div class="sub">Offline field unit // Pi 5 + NVMe // no WiFi, no 4G, no accounts, no phone. Spec rev 24 &mdash; Aug 30 2026.</div>
+    <div class="ss">
+      <div class="ss-top"><span class="ss-label px">BUILD STATUS</span><span class="ss-phase px" id="ss-phase">W1 - BENCH BRING-UP</span><span class="ss-state px" id="ss-state">IN PROGRESS</span><span class="ss-sync" id="ss-sync"></span></div>
+      <div class="ss-bar"><i id="ss-bar"></i></div>
+      <div class="ss-detail" id="ss-detail"></div>
+    </div>
   </header>
 
   <div class="console-top">
   <div class="stats">
-    <div class="stat"><div class="k px">PARTS ACQUIRED</div><div class="v" id="st-count">0<small> / 12</small></div></div>
+    <div class="stat"><div class="k px">PARTS ACQUIRED</div><div class="v" id="st-count">0<small> / 20</small></div></div>
     <div class="stat"><div class="k px">SPENT SO FAR</div><div class="v" id="st-spent">$0</div></div>
     <div class="stat"><div class="k px">REMAINING</div><div class="v" id="st-rem">$376</div></div>
     <div class="stat"><div class="k px">WEEKS DONE</div><div class="v" id="st-weeks">0<small> / 7</small></div></div>
   </div>
+  <div class="save-note px" id="save-note">CHECKLIST PROGRESS SAVES ON THIS DEVICE AUTOMATICALLY</div>
 
   <button class="sim-cta" id="console-sim-cta" type="button"><span class="px">&#9654; OPEN THE FIELD OS SIMULATOR</span><span class="sim-cta-sub">REV 24 - VIRTUAL MK-1: TWO SCREENS, ONE HANDOFF - DECK CLICKS OR KEYS 1-6 + ARROWS</span></button>
     <button class="loop-cta" id="console-loop-cta" type="button"><span class="px">&#9673; OPEN THE FIND LOOP</span><span class="sim-cta-sub">THE INTERACTION MODEL - ONE APP, TWO DISPLAYS, ONE HANDOFF</span></button>
@@ -915,12 +931,12 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   <div class="tabpage on" id="tab-plan">
     <section class="sec" id="plan">
     <div class="sec-title"><h2 class="px">01 // WEEKLY BUILD PLAN</h2><div class="rule"></div><span class="tag px">TAP A WEEK FOR THE STEP-BY-STEP</span></div>
-    <div class="panel" style="margin-bottom:16px">
-      <div class="px" style="padding:10px 16px;font-size:9px;color:var(--dim);letter-spacing:1px;background:#080b10;border-bottom:1px solid var(--edge)">AI CREW - WHICH MODEL FOR WHICH JOB <span style="color:var(--amber)">(AUG 2026 - YOUR TWO BUDGETS: $250 CLAUDE + 100K COPILOT TOKENS)</span></div>
+    <div id="weeks"></div>
+    <div class="panel" style="margin:20px 0 0">
+      <div class="px" style="padding:10px 16px;font-size:9px;color:var(--dim);letter-spacing:1px;background:#080b10;border-bottom:1px solid var(--edge)">AI CREW - WHICH MODEL FOR WHICH JOB (REFERENCE - THE WEEKS ABOVE ARE THE WORK) <span style="color:var(--amber)">(AUG 2026 - YOUR TWO BUDGETS: $250 CLAUDE + 100K COPILOT TOKENS)</span></div>
       <div id="crew-rows"></div>
       <div class="footnote" style="padding:0 16px 12px">You drive Claude Code / GitHub Copilot - the guides hand you copy-ready prompts per week. HOW TO SPEND THE TWO BUDGETS: the $250 Claude budget is the workhorse - at Sonnet 5 rates it covers months of daily code generation, debugging, and the Fable 5 architecture sessions. The 100k Copilot tokens are the scout budget - small and easy to burn (one long agentic Codex run, or a few big-context Sonnet prompts, can eat tens of thousands), so spend them on Luna-class short jobs, quick IDE questions, and free code completions. Every model named here is GA in GitHub Copilot (verified against GitHub's supported-models doc, Aug 2026); Claude models also run through your Claude budget directly. Outside both budgets: Gemini 3.7 Flash is the strongest cheap fallback, local models are truly free. Admin note: Claude Fable 5 must be enabled by your org's Copilot admin, and Anthropic retains its prompts for safety classifiers.</div>
     </div>
-    <div id="weeks"></div>
   </section>
   </div>
 
@@ -1510,7 +1526,7 @@ const PARTS=[
 const WEEKS=[
  {wk:'W1',title:'BENCH BRING-UP',m:'MILESTONE M0',deliv:'A booting desk prototype.',
   hw:['Pi 5 in the Argon ONE V3 desktop case boots from its NVMe SSD - this case is the dev bench for all software weeks','DSI LCD (non-touch) connected and displaying','Camera preview visible on the LCD during a scan session'],
-  sw:['Flash Raspberry Pi OS 64-bit (Bookworm) to NVMe','Data-layer rule from day one: every write is atomic (temp file, fsync, rename) - and never unplug a running Pi (rev 24)','Kiosk skeleton: static app served from localhost in kiosk Chromium','Camera feed embedded in the app shell']},
+  sw:['Flash Raspberry Pi OS Lite (64-bit, Trixie / Debian 13) to NVMe - Lite, not the desktop image: headless build, nothing to spare for a desktop environment','Data-layer rule from day one: every write is atomic (temp file, fsync, rename) - and never unplug a running Pi (rev 24)','Kiosk skeleton: static app served from localhost in kiosk Chromium','Camera feed embedded in the app shell']},
  {wk:'W2',title:'THE ID LOOP - EYES & EARS',m:'MILESTONE M1',deliv:'First real ID.',
   hw:['ReSpeaker 2-Mics HAT stacked and detected (arecord sees both mics)'],
   sw:['iNaturalist vision model (quantized TFLite/ONNX) classifying camera stills on CPU','BirdNET running on mic input with confidence thresholds','Danger layer on the ID card: toxic/mushroom/dangerous matches carry a permanent warning band - CANDIDATE ONLY, DO NOT CONSUME OR HANDLE - with confidence + the visual checks that confirm it (rev 24)','One-shot inference under a second per find']},
@@ -1537,10 +1553,10 @@ const WEEKS=[
 const GUIDES=[
 
 /* ---------------- WEEK 1 ---------------- */
-{intro:'By the end of this week you have a Pi 5 booting from your NVMe drive, its desktop on the 5-inch LCD, and a live camera preview. The Pi stays in its Argon ONE V3 desktop case - that is your DEV BENCH for every software week (the e-ink, mic, and buttons wire into its top GPIO slot, pinout printed right on the lid). The printed handheld shell comes later, and the Pi transplants into it in week 6.',
+{intro:'By the end of this week you have a Pi 5 booting from your NVMe drive, a login prompt on the 5-inch LCD (Raspberry Pi OS Lite - no desktop, on purpose), and a live camera preview. The Pi stays in its Argon ONE V3 desktop case - that is your DEV BENCH for every software week (the e-ink, mic, and buttons wire into its top GPIO slot, pinout printed right on the lid). The printed handheld shell comes later, and the Pi transplants into it in week 6.',
 steps:[
 {lane:'SW',t:'Flash the OS onto the NVMe (do this at your regular computer)',
-b:'Install <b>Raspberry Pi Imager</b> on your Mac/PC (raspberrypi.com/software). Plug the NVMe into your computer with a USB enclosure or M.2 adapter. In Imager: Device = <code>Raspberry Pi 5</code>, OS = <code>Raspberry Pi OS (64-bit)</code> (that is Bookworm), Storage = your NVMe. When it offers OS customization, say EDIT SETTINGS: set hostname <code>scout</code>, your username + password, your home WiFi, and under Services enable SSH. Then WRITE.',
+b:'Install <b>Raspberry Pi Imager</b> on your Mac/PC (raspberrypi.com/software). Plug the NVMe into your computer with a USB enclosure or M.2 adapter. In Imager: Device = <code>Raspberry Pi 5</code>, OS = <code>Raspberry Pi OS Lite (64-bit)</code> (under "Raspberry Pi OS (other)" - Lite is Trixie / Debian 13 with no desktop. That IS the target OS; Bookworm Legacy is the fallback only if a HAT installer chokes), Storage = your NVMe. When it offers OS customization, say EDIT SETTINGS: set hostname <code>scout</code>, your username + password, your home WiFi, and under Services enable SSH. Then WRITE.',
 done:'Imager says "Write Successful" and lets you eject the drive.',
 fail:'NVMe not in the storage list? Use a blue USB 3 port, reseat the drive in its enclosure, and quit any other disk tools holding it.'},
 {lane:'HW',t:'Mount the NVMe on the Pi',
@@ -1549,8 +1565,8 @@ done:'HAT sits flat and level; ribbon fully seated at both ends.',
 fail:'Pi boots to a bootloader/"no bootable device" screen = ribbon orientation or a half-closed latch. Power off, reseat both ends.'},
 {lane:'HW',t:'Connect the 5-inch LCD (non-touch)',
 b:'The display uses one DSI ribbon. On the Pi 5 it goes in the MIPI port labeled <code>CAM/DISP 1</code> - match the Pi 5 photo on the Waveshare product wiki exactly (ribbon metal-contact side matters). Latch up, ribbon in, latch down. Then power the Pi with the official 27W USB-C supply.',
-done:'About 30 seconds after power: rainbow splash, then the full Raspberry Pi OS desktop on the 5-inch screen. Touch responds to a finger.',
-fail:'Black screen = the ribbon is backwards or half-seated, 9 times out of 10. Power off and reseat. Also confirm you flashed Bookworm - DSI is driver-free there.'},
+done:'About 30 seconds after power: rainbow splash, boot text, then a <code>scout login:</code> prompt on the 5-inch screen. Lite has no desktop - that prompt IS the win. (Panel is non-touch by design - rev 8.)',
+fail:'Black screen = the ribbon is backwards or half-seated, 9 times out of 10. Power off and reseat. Also confirm you flashed the Lite (64-bit) image - DSI is driver-free on Trixie.'},
 {lane:'HW',t:'Connect the camera',
 b:'Power off first. The camera ribbon goes into the other MIPI port (<code>CAM/DISP 0</code>). Both ends latch the same way as the display. Match the orientation photo on the camera\'s getting-started page.',
 cmd:['rpicam-hello -t 5000   # 5-second live preview window'],
@@ -1559,20 +1575,20 @@ fail:'"No cameras available" = reseat the ribbon at BOTH ends (the camera PCB en
 {lane:'SW',t:'Update everything, turn on the interfaces you will need',
 b:'Two interface groups matter later: I2C (fuel gauge) and SPI (e-ink). For the Serial Port: login shell over serial = <b>No</b>, serial port hardware = <b>Yes</b> - that hands the UART to your GPS in week 3.',
 cmd:['sudo apt update && sudo apt full-upgrade -y','sudo raspi-config   # Interface Options: I2C=Yes, SPI=Yes, Serial: shell=No, hardware=Yes','sudo reboot'],
-done:'Reboot lands back on the desktop on the LCD. Nothing ever asked you for a "driver".',
-fail:'raspi-config looks different / missing options = you are not on Bookworm. Reflash with the 64-bit image.'},
+done:'Reboot lands back at the login prompt on the LCD. Nothing ever asked you for a "driver".',
+fail:'raspi-config looks different / missing options = you are not on Trixie Lite. Reflash with the Lite (64-bit) image.'},
 {lane:'SW',t:'Make the project folder and serve your first page',
 b:'This is the exact pattern the whole device UI - and later the offline Cesium map - will use: a tiny local server, no internet involved.',
-cmd:['mkdir -p ~/scout/app && cd ~/scout/app','echo \'<h1>SCOUT MK-1 ONLINE</h1>\' > index.html','python3 -m http.server 8000','# then open http://localhost:8000 in the Pi\'s browser'],
-done:'Your page loads from <code>localhost:8000</code>.',
+cmd:['mkdir -p ~/scout/app && cd ~/scout/app','echo \'<h1>SCOUT MK-1 ONLINE</h1>\' > index.html','python3 -m http.server 8000','# on Lite there is no browser yet - check from your Mac instead: http://scout.local:8000'],
+done:'Your page loads at <code>http://scout.local:8000</code> in your Mac browser (bench WiFi).',
 fail:'"Address already in use" = an old server is still running: <code>pkill -f http.server</code> and retry.'},
 {lane:'SW',t:'Kiosk mode test',
-b:'Launch the Pi\'s browser fullscreen on your page. Use the Raspberry Pi OS <code>chromium-browser</code> package, not a generic Chromium - the Pi-patched build is the difference between a slideshow and a smooth map later (see spec section 7.2).',
-cmd:['chromium-browser --kiosk --incognito http://localhost:8000   # Alt+F4 to exit'],
+b:'On Lite there is no desktop to launch a browser from - the kiosk runs on <code>cage</code>, a single-app Wayland compositor (the standard kiosk-on-Lite pattern). It takes over the LCD with exactly one fullscreen app. Use the Raspberry Pi OS <code>chromium-browser</code> package, not a generic Chromium - the Pi-patched build is the difference between a slideshow and a smooth map later (see spec section 7.2).',
+cmd:['sudo apt install -y cage chromium-browser','cage -- chromium-browser --kiosk --incognito http://localhost:8000','# exit: SSH in and run sudo pkill cage - or Ctrl+Alt+F2 for a second console'],
 done:'Full-screen page, no browser chrome, no address bar. That is the device\'s face.',
-fail:'<code>command not found</code> = install it: <code>sudo apt install chromium-browser</code>.'}],
+fail:'<code>command not found</code> = install both: <code>sudo apt install -y cage chromium-browser</code>.'}],
 prompts:[
-{job:'DEPLOYMENT',model:'Sonnet 5',t:'Kiosk autostart service',b:`I am on Raspberry Pi OS 64-bit Bookworm (Wayland/labwc) on a Raspberry Pi 5. Write me a boot autostart that: 1) starts a static file server for ~/scout/app on port 8000, 2) waits until it answers, 3) launches chromium-browser in --kiosk mode on http://localhost:8000 with the cursor hidden and all crash/error dialogs suppressed, 4) restarts the browser if it exits. Use whatever is actually reliable on Bookworm (systemd user service or labwc autostart) and give me the exact commands to install and enable it. Explain each flag in one short comment.`},
+{job:'DEPLOYMENT',model:'Sonnet 5',t:'Kiosk autostart service',b:`I am on Raspberry Pi OS Lite 64-bit Trixie (no desktop - kiosk runs on the cage Wayland compositor) on a Raspberry Pi 5. Write me a boot autostart that: 1) starts a static file server for ~/scout/app on port 8000, 2) waits until it answers, 3) launches chromium-browser in --kiosk mode on http://localhost:8000 with the cursor hidden and all crash/error dialogs suppressed, 4) restarts the browser if it exits. Use whatever is actually reliable on Bookworm (systemd user service or labwc autostart) and give me the exact commands to install and enable it. Explain each flag in one short comment.`},
 {job:'UX DESIGN',model:'Sonnet 5 - Sol via Copilot for polish',t:'Boot splash + home screen',b:`Write a single-file index.html for a retro-future handheld nature-ID device called SCOUT MK-1. Dark CRT theme, phosphor-green pixel-style text (monospace stack, no webfonts), subtle scanline overlay. It plays a fake boot sequence that types lines one at a time (SYSTEM CHECK... OK, CAMERA... OK, GPS... SEARCHING... LOCK) then lands on a home screen with six big chunky buttons labeled SCAN, LISTEN, ASK, MAP, DEX, POWER. Vanilla JS only, zero external assets or fonts - this device is fully offline. Buttons should log to the console for now.`},
 {job:'CODE GEN',model:'Sonnet 5',t:'Camera-in-app test page',b:`Extend my kiosk page: add a "live view" panel that shows the Pi camera feed. Constraint: no internet, no getUserMedia against the CSI camera (it is not a webcam device). Show me the standard pattern on Raspberry Pi OS Bookworm - a tiny Python sidecar using picamera2 that streams MJPEG to a local port, and the <img> tag in my page that displays it. Include the pip install, the Python file, and the exact HTML snippet. This preview is not a throwaway test: it becomes the app's resting-state viewfinder (the device is always aimed), so structure the sidecar as a reusable module I keep.`}]},
 
@@ -1584,7 +1600,7 @@ b:'Power off. Press the ReSpeaker 2-Mics HAT straight onto the 40-pin header - i
 done:'HAT fully seated, no pin offset, nothing wobbles.',
 fail:'If you powered on with an offset header, power off and check for damage before trying again. Offset seating can short 5V into the wrong pin.'},
 {lane:'SW',t:'Install the mic driver and prove the mic works',
-b:'Use the HinTak fork of seeed-voicecard - it tracks current kernels; the original ReSpeaker repo does not. Bookworm runs a 6.x kernel.',
+b:'Use the HinTak fork of seeed-voicecard - it tracks current kernels; the original ReSpeaker repo does not. Trixie runs a 6.x kernel.',
 cmd:['git clone https://github.com/HinTak/seeed-voicecard.git','cd seeed-voicecard && sudo ./install.sh && sudo reboot','arecord -l   # after reboot: look for seeed2micvoicec'],
 done:'<code>arecord -l</code> lists a capture card like <code>seeed2micvoicec</code>.',
 fail:'Card not listed = check the installer output for a kernel-version error. Re-run install.sh after <code>sudo apt full-upgrade</code> + reboot so kernel and headers match.'},
@@ -1923,7 +1939,14 @@ const SPEC_HTML="<h1>Project SCOUT v1 - Hardware + Software Spec</h1>\n<p>For Ja
 /* ============ APP LOGIC ============ */
 const LS='scout-dash-v2';
 let state={};try{state=JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){state={}}
-const save=()=>localStorage.setItem(LS,JSON.stringify(state));
+const SAVENOTE=document.getElementById('save-note');
+const save=()=>{try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){}if(SAVENOTE)SAVENOTE.textContent='PROGRESS SAVED ON THIS DEVICE - '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});};
+window.addEventListener('pagehide',()=>{try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){}});
+/* ---- build status strip - synced from the repo (status.json at the Pages root) ---- */
+const STATUS_FALLBACK={phase:'W1 - BENCH BRING-UP',state:'IN PROGRESS',pct:4,updated:'AUG 31 2026',detail:'Raspberry Pi OS Lite (64-bit, Trixie) is flashed and running on the Pi 5 in the Argon ONE V3 bench case (Aug 31). Next up: DSI LCD + camera preview on the bench, then the kiosk skeleton.'};
+function renderStatus(s){document.getElementById('ss-phase').textContent=s.phase;document.getElementById('ss-state').textContent=s.state;document.getElementById('ss-bar').style.width=Math.max(0,Math.min(100,s.pct||0))+'%';document.getElementById('ss-detail').textContent=s.detail;document.getElementById('ss-sync').textContent='SYNCED FROM THE REPO - '+s.updated;}
+renderStatus(STATUS_FALLBACK);
+fetch('status.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(s=>{if(s&&s.phase)renderStatus(s)}).catch(()=>{});
 function el(t,c,html){const e=document.createElement(t);if(c)e.className=c;if(html!=null)e.innerHTML=html;return e}
 
 /* ---- tabs ---- */
@@ -2101,7 +2124,7 @@ function renderWeeks(){
     });
     if(gd.prompts&&gd.prompts.length){
       const ph3=el('h3','px','PROMPTS FOR YOUR AI PAIR-PROGRAMMER');ph3.style.cssText='font-family:PS2P,monospace;font-size:9px;color:var(--hot);letter-spacing:1px;margin:20px 0 4px';gin.appendChild(ph3);
-      gin.appendChild(el('div','g-note','Paste these into Claude Code / Copilot as-is. The tag says which model to run them on - see the AI CREW panel above.'));
+      gin.appendChild(el('div','g-note','Paste these into Claude Code / Copilot as-is. The tag says which model to run them on - see the AI CREW panel at the bottom of this tab.'));
       gd.prompts.forEach(pr=>{
         const box=el('div','prompt');
         const ph=el('div','p-h');

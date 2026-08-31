@@ -1,0 +1,7 @@
+{
+  "phase": "W1 - BENCH BRING-UP",
+  "state": "IN PROGRESS",
+  "pct": 4,
+  "updated": "AUG 31 2026",
+  "detail": "Raspberry Pi OS Lite (64-bit, Trixie) is flashed and running on the Pi 5 in the Argon ONE V3 bench case (Aug 31). Next up: DSI LCD + camera preview on the bench, then the kiosk skeleton."
+}
