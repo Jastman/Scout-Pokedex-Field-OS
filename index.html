@@ -879,7 +879,7 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   <header class="hdr">
     <div class="hdr-top">
       <h1 class="px">SCOUT MK-1</h1>
-      <span class="ver px">BUILD CONSOLE v4.3</span>
+      <span class="ver px">BUILD CONSOLE v4.4</span>
     </div>
     <div class="sub">Offline field unit // Pi 5 + NVMe // no WiFi, no 4G, no accounts, no phone. Spec rev 24 &mdash; Aug 30 2026.</div>
     <div class="ss">
@@ -891,7 +891,7 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
 
   <div class="console-top">
   <div class="stats">
-    <div class="stat"><div class="k px">PARTS ACQUIRED</div><div class="v" id="st-count">0<small> / 20</small></div></div>
+    <div class="stat"><div class="k px">PARTS ACQUIRED</div><div class="v" id="st-count">0<small> / 22</small></div></div>
     <div class="stat"><div class="k px">SPENT SO FAR</div><div class="v" id="st-spent">$0</div></div>
     <div class="stat"><div class="k px">REMAINING</div><div class="v" id="st-rem">$376</div></div>
     <div class="stat"><div class="k px">WEEKS DONE</div><div class="v" id="st-weeks">0<small> / 7</small></div></div>
@@ -2041,8 +2041,9 @@ function updateTotals(){
   const totalCount=counted.length;
   alts.forEach(a=>{if(state[a.id]){const prim=PARTS.find(x=>x.group===a.group&&!x.alt);total=total-prim.price+a.price}});
   PARTS.forEach(x=>{if(x.price&&!x.opt&&state[x.id])acq+=x.price});
-  const checkedCount=PARTS.filter(x=>x.price&&!x.opt&&!x.alt&&state[x.id]).length + alts.filter(a=>state[a.id]).length;
-  document.getElementById('st-count').innerHTML=checkedCount+'<small> / '+totalCount+'</small>';
+  const ownedAll=PARTS.filter(x=>x.owned);
+  const checkedCount=PARTS.filter(x=>x.price&&!x.opt&&!x.alt&&state[x.id]).length + alts.filter(a=>state[a.id]).length + ownedAll.filter(x=>state[x.id]).length;
+  document.getElementById('st-count').innerHTML=checkedCount+'<small> / '+(totalCount+ownedAll.length)+'</small>';
   document.getElementById('st-spent').textContent='$'+acq;
   document.getElementById('st-rem').textContent='$'+(total-acq);
   document.getElementById('sub-line').textContent='$'+acq+' / $'+total;
