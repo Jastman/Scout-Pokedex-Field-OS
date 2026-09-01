@@ -54,6 +54,7 @@ a{color:var(--hot)}
 .ss-bar i{display:block;height:100%;width:0;background:var(--phos);box-shadow:0 0 10px rgba(87,247,160,.5);transition:width .5s}
 .ss-detail{margin-top:8px;font-size:11.5px;color:var(--ink);line-height:1.5}
 .save-note{margin:-14px 2px 22px;font-size:8px;color:var(--dim);letter-spacing:1px;text-align:right}
+body.locked .task,body.locked .row .cb,body.locked .guide-btn{cursor:default}
 .boot{margin-top:14px;font-size:11.5px;color:var(--dim)}
 .boot b{color:var(--phos);font-weight:400}
 .boot .ok{color:var(--hot)}
@@ -879,7 +880,7 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   <header class="hdr">
     <div class="hdr-top">
       <h1 class="px">SCOUT MK-1</h1>
-      <span class="ver px">BUILD CONSOLE v4.4</span>
+      <span class="ver px">BUILD CONSOLE v4.5</span>
     </div>
     <div class="sub">Offline field unit // Pi 5 + NVMe // no WiFi, no 4G, no accounts, no phone. Spec rev 24 &mdash; Aug 30 2026.</div>
     <div class="ss">
@@ -896,7 +897,7 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
     <div class="stat"><div class="k px">REMAINING</div><div class="v" id="st-rem">$376</div></div>
     <div class="stat"><div class="k px">WEEKS DONE</div><div class="v" id="st-weeks">0<small> / 7</small></div></div>
   </div>
-  <div class="save-note px" id="save-note">CHECKLIST PROGRESS SAVES ON THIS DEVICE AUTOMATICALLY</div>
+  <div class="save-note px" id="save-note">READ-ONLY VIEW - ONLY THE BUILDER EDITS PROGRESS</div>
 
   <button class="sim-cta" id="console-sim-cta" type="button"><span class="px">&#9654; OPEN THE FIELD OS SIMULATOR</span><span class="sim-cta-sub">REV 24 - VIRTUAL MK-1: TWO SCREENS, ONE HANDOFF - DECK CLICKS OR KEYS 1-6 + ARROWS</span></button>
     <button class="loop-cta" id="console-loop-cta" type="button"><span class="px">&#9673; OPEN THE FIND LOOP</span><span class="sim-cta-sub">THE INTERACTION MODEL - ONE APP, TWO DISPLAYS, ONE HANDOFF</span></button>
@@ -1118,7 +1119,7 @@ DONT: decorative vents, fake seams, glossy finishes, &gt;1 accent color</pre>
       <li><a href="https://www.waveshare.com/product/max-m8q-gnss-hat.htm">Waveshare MAX-M8Q GNSS HAT (HAT alt)</a></li>
       <li><a href="https://www.sparkfun.com/raspberry-pi-ai-hat-13-tops.html">Raspberry Pi AI HAT+ 13 TOPS</a></li>
     </ul>
-    <div class="note">Checklist state saves to this browser (localStorage). Single file, no network calls - same offline rules as the device.</div>
+    <div class="note">Read-only for visitors - check-offs are owner-only. On the owner's device, checklist state saves locally (localStorage). Single file, one optional fetch (repo status.json) - same offline rules as the device.</div>
     <button class="reset" id="reset">RESET ALL PROGRESS</button>
   </footer>
   </div>
@@ -1940,6 +1941,17 @@ const SPEC_HTML="<h1>Project SCOUT v1 - Hardware + Software Spec</h1>\n<p>For Ja
 const LS='scout-dash-v2';
 let state={};try{state=JSON.parse(localStorage.getItem(LS)||'{}')}catch(e){state={}}
 const SAVENOTE=document.getElementById('save-note');
+/* ---- owner gate: check-offs and progress edits are Jake-only; visitors get a read-only view ---- */
+const OWNER_KEY='scout-mk1-owner', OWNER_CODE='fieldunit01';
+let isOwner=false;try{isOwner=localStorage.getItem(OWNER_KEY)==='1'}catch(e){}
+function setOwner(on){isOwner=on;try{localStorage.setItem(OWNER_KEY,on?'1':'0')}catch(e){}applyOwnerUI();}
+function guestNote(){if(SAVENOTE)SAVENOTE.textContent='READ-ONLY VIEW - CHECK-OFFS ARE OWNER-ONLY';}
+function applyOwnerUI(){document.body.classList.toggle('locked',!isOwner);const r=document.getElementById('reset');if(r)r.style.display=isOwner?'':'none';if(SAVENOTE)SAVENOTE.textContent=isOwner?'OWNER MODE - PROGRESS SAVES ON THIS DEVICE AUTOMATICALLY':'READ-ONLY VIEW - ONLY THE BUILDER EDITS PROGRESS';}
+/* unlock once on Jake's device: append ?owner=<code> to the URL, or tap the version badge 5x and enter it. ?owner=off locks again. */
+try{const q=new URLSearchParams(location.search);const oc=q.get('owner');if(oc){if(oc===OWNER_CODE)setOwner(true);else if(oc==='off')setOwner(false);history.replaceState(null,'',location.pathname+location.hash);}}catch(e){}
+let vtaps=0,vtimer=null;
+const VERBADGE=document.querySelector('.hdr .ver');
+if(VERBADGE)VERBADGE.addEventListener('click',()=>{vtaps++;clearTimeout(vtimer);vtimer=setTimeout(()=>{vtaps=0},3000);if(vtaps>=5){vtaps=0;const p=window.prompt('Owner passphrase');if(p===OWNER_CODE){setOwner(true);if(SAVENOTE)SAVENOTE.textContent='OWNER MODE UNLOCKED - PROGRESS SAVES ON THIS DEVICE';}}});
 const save=()=>{try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){}if(SAVENOTE)SAVENOTE.textContent='PROGRESS SAVED ON THIS DEVICE - '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});};
 window.addEventListener('pagehide',()=>{try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){}});
 /* ---- build status strip - synced from the repo (status.json at the Pages root) ---- */
@@ -2029,6 +2041,7 @@ function renderParts(){
   updateTotals();
 }
 function togglePart(item){
+  if(!isOwner){guestNote();return}
   state[item.id]=!state[item.id];
   if(state[item.id]&&item.group){PARTS.filter(x=>x.group===item.group&&x.id!==item.id).forEach(x=>state[x.id]=false)}
   save();renderParts();
@@ -2081,7 +2094,7 @@ function renderWeeks(){
         const task=el('div','task'+(state[id]?' done':''));
         task.appendChild(el('div','cb',state[id]?'X':''));
         task.appendChild(el('span',null,t));
-        task.onclick=()=>{state[id]=!state[id];save();renderWeeks()};
+        task.onclick=()=>{if(!isOwner){guestNote();return}state[id]=!state[id];save();renderWeeks()};
         lane.appendChild(task);
       });
       return lane;
@@ -3601,12 +3614,12 @@ function simInit(){
 
 
 /* ---- reset ---- */
-document.getElementById('reset').onclick=()=>{if(confirm('Wipe all checklist progress?')){state={};save();renderParts();renderWeeks()}};
+document.getElementById('reset').onclick=()=>{if(!isOwner){guestNote();return}if(confirm('Wipe all checklist progress?')){state={};save();renderParts();renderWeeks()}};
 
 /* ---- spec body injection point: @@SPEC@@ replaced at build ---- */
 document.getElementById('spec-body').innerHTML=SPEC_HTML;
 
-renderCrew();renderParts();renderWeeks();simInit();
+applyOwnerUI();renderCrew();renderParts();renderWeeks();simInit();
 
 </script>
 <script>
