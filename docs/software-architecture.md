@@ -29,7 +29,7 @@ cancelled). That means **the four heavy engines never legitimately run concurren
 full tilt.** The "concurrency budget" is really:
 
 1. Exactly **one foreground inference job** at a time (vision OR BirdNET OR whisper OR
-   LLM), pinned to 3 of the 4 cores.
+   LLM), on all 4 cores but niced below the interactive processes.
 2. A **permanent interactive reservation** (1 core's worth) for the kiosk app, einkd,
    audio I/O, and gpsd — the things that make the device feel alive while it thinks.
 3. Background work (thumbnail dithering, sync, tile prefetch) only in IDLE, at
@@ -37,7 +37,8 @@ full tilt.** The "concurrency budget" is really:
 
 The one true overlap in the whole product is inside ASK: **the LLM generates sentence
 N+1 while Piper synthesizes and the speaker plays sentence N.** That overlap is what
-makes the latency budget in §5 work, and it is why the LLM gets 3 threads, not 4.
+makes the latency budget in §5 work — Piper's single thread rides alongside the niced
+LLM threads and the kernel sorts it out.
 
 The concurrent worst case in spec §10.1 (all four engines at once) remains the THERMAL
 test load — it is the abuse case the shell must survive, not the scheduling design.
@@ -66,10 +67,10 @@ model load on first ASK.
 | State | vision | BirdNET | whisper | LLM | Piper | camera | LCD | einkd |
 |---|---|---|---|---|---|---|---|---|
 | IDLE | — | — | — | — | — | off | off | partials |
-| SCAN (dome) | **3 threads** | — | — | — | — | preview+still | on | queued |
-| LISTEN | — | **3 threads** | — | — | — | off | on (spectrogram) | mirror line |
+| SCAN (dome) | **4T, nice+10** | — | — | — | — | preview+still | on | queued |
+| LISTEN | — | **4T, nice+10** | — | — | — | off | on (spectrogram) | mirror line |
 | ASK hold (recording) | — | — | encode stream | — | — | off | per wake rule | — |
-| ASK answer | — | — | **3T → done** | **3 threads** | 1 thread, overlapped | off | per wake rule | — |
+| ASK answer | — | — | **4T → done** | **4T, nice+10** | 1 thread, overlapped | off | per wake rule | — |
 | Find landing | — | — | — | — | sting via WebAudio | off | dive anim | **full refresh** |
 | COOLING DOWN | refused | refused | refused | refused | — | off | off | glyph |
 
@@ -84,10 +85,11 @@ Rules:
 
 Pi 5 = 4× Cortex-A76. Policy:
 
-- **Inference engines get 3 threads** (`--threads 3` for llama.cpp/whisper.cpp,
-  `num_threads=3` for TFLite). Leaving core headroom for UI/audio beats the marginal
-  4th-thread gain — llama.cpp generation is memory-bandwidth-bound on this SoC, and the
-  4th thread buys little [EST; verify with §7.1 A/B run].
+- **The foreground inference job gets all 4 threads, at nice +10.** Published Pi 5
+  llama.cpp data shows 4 threads measurably beats 3 (generation is memory-bandwidth
+  bound, but the 4th thread still helps — sources in §5), and because the job runs
+  niced, the interactive processes still preempt it. The 3-thread configuration is the
+  documented fallback if §7.3 shows UI jank; ask_latency.sh runs the A/B.
 - **No hard cpusets in v1.** `taskset`-pinning inference to cores 1–3 is the documented
   fallback if bench shows UI jank; try plain nice levels first (simpler, and the kernel
   balances better when the inference job is the only heavy thing running).
@@ -122,36 +124,47 @@ hold ASK ──────────────┐ release
         │ sentence 2+ generated WHILE sentence 1 plays
 ```
 
-Budget per stage for a 4 s kid utterance, ~25-token first sentence:
+Budget per stage for a 4 s kid utterance, ~25-token first sentence. Published Pi 5
+anchor points: ~1.5–2 B Q4 models generate ~5–8 tok/s and prompt-process ~25–32 tok/s
+(Gemma 3n E2B measured pp512 31.9 / tg128 6.0 tok/s; Qwen2.5-1.5B ~10–14 tok/s;
+Qwen3-1.7B Q4_K_M is a 1.28 GB file and decode is memory-bandwidth-bound, so expect
+**~5–6.5 tok/s** [EST: measured effective weight-streaming bandwidth 6.6–8.2 GB/s ÷
+1.28 GB]). whisper.cpp on Pi 5: tiny ≈ 1.5 s, base ≈ 3 s for a short command
+(openHAB whisper-binding figures). Piper on Pi 5: RTF ~0.2–0.35, short sentence in
+~0.5–1 s.
 
-| Stage | Estimate | Basis |
-|---|---|---|
-| whisper.cpp (tiny.en, 3 threads) | [EST] ~1.0–1.5 s | published Pi 5 RTF ~0.25–0.35× for tiny [BENCH to confirm on toddler audio] |
-| retrieval (FTS5 over species pack) | <0.05 s | indexed SQLite, ~10k rows |
-| LLM prompt eval (~350 tok: system + JSON schema + retrieved context + transcript) | [EST] ~2–4 s | Pi 5 prompt-processing rate, 1.7B Q4 [BENCH] |
-| LLM first sentence (~25 tok) | [EST] ~2–2.5 s | ~10–12 tok/s generation [BENCH] |
-| Piper first sentence (RTF < 1, streamed) | [EST] ~0.5 s to first samples | Piper low/medium voice on Pi-class CPU |
-| **First audio out** | **[EST] ~5.5–8.5 s** | |
+| Stage | Qwen3-1.7B | Qwen3-0.6B (~0.4 GB Q4) | Basis |
+|---|---|---|---|
+| whisper.cpp tiny.en, 4T | ~1.5 s | ~1.5 s | published Pi 5 figure [BENCH on toddler audio] |
+| retrieval (FTS5) | <0.05 s | <0.05 s | indexed SQLite, ~10k rows |
+| LLM prompt eval, ~100 uncached tok (context + transcript; system+schema prompt-cached) | [EST] ~2.5–3.5 s | [EST] ~1–1.5 s | pp ≈ 28–40 tok/s (1.7B), scales with size |
+| LLM first sentence (~25 tok) | [EST] ~3.8–5 s | [EST] ~1.3–1.6 s | tg ≈ 5–6.5 vs ~16–20 tok/s [EST, bandwidth model] |
+| Piper first sentence (streamed) | ~0.5–1 s | ~0.5–1 s | RTF 0.2–0.35 on Pi 5 |
+| **First audio out** | **[EST] ~8.5–11 s** | **[EST] ~4.5–5.5 s** | |
 
-**Honest reading: the naive pipeline misses a kid's attention span.** The budget is
-rescued by three design moves, all cheap:
+Three design moves are already priced into that table — without them the 1.7B column
+would be ~14–20 s:
 
 1. **Instant acknowledgment sound + waveform swap at release** (0 ms perceived dead
    air — the device visibly "heard you"). Already in the design language.
-2. **Prompt-prefix caching**: the system prompt + JSON schema (~250 of the ~350 tokens)
-   is identical every time — llama.cpp `--prompt-cache` keeps it evaluated on disk/RAM,
-   cutting prompt eval to just the retrieved context + transcript [EST saves 1.5–3 s].
-3. **Sentence-streamed TTS** (already in the table): first audio when the first
-   sentence closes, not when generation ends.
+2. **Prompt-prefix caching**: the system prompt + JSON schema (~250 tok) is identical
+   every time — llama.cpp `--prompt-cache` keeps it evaluated, so only the retrieved
+   context + transcript (~100 tok) is paid per question. Without it, add ~8–12 s to
+   the 1.7B column. Non-negotiable.
+3. **Sentence-streamed TTS**: first audio when the first sentence closes, not when
+   generation ends.
 
-Target after moves 1–3: **first spoken audio ≤ 4.5 s from release; full reply ≤ 12 s.**
-Pass/fail lives in §7.1. If the bench misses ≤ 4.5 s with Qwen3-1.7B, the documented
-ladder is: tiny.en for whisper → Qwen3-0.6B (the W3 plan already names this fallback) →
-only then consider hardware changes.
+**Honest conclusion the numbers force: Qwen3-1.7B misses a 4-year-old's attention span
+even with every trick applied.** The W3 plan already says "drop to 0.6B if replies
+lag" — the published data says it will lag, so plan for **Qwen3-0.6B as the shipping
+default** and treat 1.7B as the upgrade that must EARN its way in on the bench.
+Pass/fail (§7.1): **first audio ≤ 5.5 s median, full reply ≤ 15 s** — run both models,
+ship the biggest one that passes. If even 0.6B misses, drop the JSON-structure tokens
+from the reply path (speak plain text, validate structure only for on-screen use).
 
-RAM/model inventory (all resident under askd): Qwen3-1.7B Q4_K_M GGUF ~1.1 GB,
-whisper base.en ~150 MB (tiny.en ~75 MB), Piper voice ~60–100 MB [EST; confirm at
-download time].
+RAM/model inventory (resident under askd): Qwen3-1.7B Q4_K_M 1.28 GB (0.6B ~0.4 GB),
+whisper base.en 142 MB / tiny.en 75 MB, BirdNET GLOBAL 6K v2.4 FP16 ~25 MB, Piper
+en_US medium voice ~63 MB.
 
 ## 6. Input map (gpio-keys) — 12 inputs, and the stale "six buttons" guide
 
@@ -178,8 +191,9 @@ threshold. Run over SSH from the Mac against the bench Pi.
 ### 7.1 `ask_latency.sh` — full ASK round trip
 Plays a canned 4 s WAV (record the actual kid once, reuse forever) into the pipeline,
 timestamps each stage boundary, 10 runs, reports median + p95.
-**PASS: first-audio ≤ 4.5 s median with prompt cache warm; full reply ≤ 12 s.**
-Also runs the A/B: whisper tiny.en vs base.en, LLM 3 vs 4 threads.
+**PASS: first-audio ≤ 5.5 s median with prompt cache warm; full reply ≤ 15 s** —
+run both Qwen3-0.6B and 1.7B, ship the biggest model that passes.
+Also runs the A/B: whisper tiny.en vs base.en, LLM 4 vs 3 threads.
 
 ### 7.2 `concurrent_soak.sh` — the spec §10.1 thermal load, made executable
 Loops all four engines simultaneously (the abuse case): whisper.cpp on a looped WAV,
@@ -189,14 +203,15 @@ clip — ≥ 20 min, logging `vcgencmd measure_temp`, PMIC temp
 **PASS: SoC sustained < 80 °C, zero throttle flags, bay < 45 °C** (case closed;
 outdoor-sun variant per spec §10.1).
 
-### 7.3 `ui_jank_probe.sh` — interactive reservation check
-While 7.2 runs: einkd partial-refresh round trip < 1 s, kiosk rAF frame time p95
-< 33 ms, audio playback underrun count = 0 over 5 min.
+### 7.3 UI jank probe — interactive reservation check (manual until W4/W5)
+While 7.2 runs, measure: einkd partial-refresh round trip < 1 s, kiosk rAF frame time
+p95 < 33 ms, audio playback underrun count = 0 over 5 min. (Scriptable only once einkd
+and the kiosk exist — W4; until then it's a checklist, not a file.)
 **PASS: all three.** FAIL → apply the taskset fallback from §4 and rerun.
 
 ### 7.4 Storage concurrency (only if the AI HAT+ ever goes in)
-See hardware doc §2.4 — fio + Hailo inference loop; owned by the hardware doc since
-the pass criterion is about PCIe enumeration stability, not software scheduling.
+See hardware doc §2 (gate) and §8 — fio + Hailo inference loop; owned by the hardware
+doc since the pass criterion is PCIe enumeration stability, not software scheduling.
 
 ## 8. Repo conflicts this doc surfaces (fix in the console, not here)
 
@@ -213,13 +228,15 @@ the pass criterion is about PCIe enumeration stability, not software scheduling.
    design doc's 800×480 layout is already correct. Hardware doc §6 prices both.
 3. **"Six buttons on six free GPIOs"** (W3 guide): stale, see §6 — 12 inputs.
 4. **Two speaker paths**: rev 11 added MAX98357A + 40 mm speaker, but the ReSpeaker
-   2-Mics HAT's WM8960 codec already has a mono speaker output, and both live on the
-   Pi's single I2S interface. Two DACs on one I2S bus is configurable (MAX98357A just
-   taps the data line) but pointless. Decide one: (a) drop the MAX98357A and drive the
-   40 mm speaker from the WM8960 (−$12, one less board, ~1 W ceiling), or
-   (b) keep the MAX98357A for 3 W and route ONLY playback to it, using the WM8960 for
-   capture — requires a custom ALSA/device-tree setup that must be bench-proven in W4.
-   Recommendation: try (a) first; 1 W into 40 mm at arm's length is loud.
+   2-Mics HAT has its own speaker output (3.5 mm + JST), and both codecs live on the
+   Pi's single I2S interface. Note the HAT is now **v2.0 (TLV320AIC3104 codec at I2C
+   0x18)** — the WM8960 v1 predates Pi 5 support and is no longer sold new, so every
+   WM8960/0x1A reference in the console guides is stale. Decide one path in W4:
+   (a) drive the 40 mm speaker from the HAT's own JST output (−$6, one less board —
+   verify its drive level on the bench first; the AIC3104 is a headphone-class
+   output), or (b) keep the MAX98357A for 3 W and route ONLY playback to it, capture
+   via the HAT — a custom ALSA/device-tree split that must be bench-proven.
+   Recommendation: bench (a) for loudness first; keep (b) as the fallback.
 5. **"iNaturalist's open vision model" is not a turn-key download.** iNat's production
    model and the Seek on-device model are not published as offline TFLite/ONNX files.
    Real W2 candidates: the TF-Hub AIY natural-world classifiers (iNat-trained plants

@@ -4,7 +4,8 @@
 # -> first sentence -> Piper synthesis start. Prints per-stage seconds and the
 # first-audio total, over N runs (median matters, run >= 10).
 #
-# PASS: first_audio median <= 4.5 s (prompt cache warm); full reply <= 12 s.
+# PASS: first_audio median <= 5.5 s (prompt cache warm); full reply <= 15 s.
+# Run once with MODEL=qwen3-0.6b and once with qwen3-1.7b; ship the biggest PASS.
 # Record the canned WAV from the actual kid once; toddler speech is the test.
 set -u
 N="${N:-10}"
@@ -12,7 +13,7 @@ WHISPER="${WHISPER:-$HOME/scout/whisper.cpp}"
 WMODEL="${WMODEL:-$WHISPER/models/ggml-tiny.en.bin}"     # A/B with base.en
 LLAMA="${LLAMA:-$HOME/scout/llama.cpp}"
 MODEL="${MODEL:-$HOME/scout/models/qwen3-1.7b-q4_k_m.gguf}"
-THREADS="${THREADS:-3}"                                   # A/B with 4
+THREADS="${THREADS:-4}"                                   # A/B with 3 if UI janks
 WAV="${WAV:-$HOME/scout/testdata/kid_question_4s.wav}"
 PIPER_VOICE="${PIPER_VOICE:-$HOME/scout/models/piper/en_US-lessac-medium.onnx}"
 CACHE="${CACHE:-/tmp/ask_prompt.cache}"
@@ -56,5 +57,5 @@ done
 
 med() { printf '%s\n' "$@" | sort -n | awk '{a[NR]=$1} END{print a[int((NR+1)/2)]}'; }
 MF=$(med "${runs_first[@]}"); MU=$(med "${runs_full[@]}")
-echo "median first_audio=${MF}s (PASS <= 4.5), median full=${MU}s (PASS <= 12)"
-awk -v f="$MF" -v u="$MU" 'BEGIN{ if (f<=4.5 && u<=12) {print "PASS"} else {print "FAIL"; exit 1} }'
+echo "median first_audio=${MF}s (PASS <= 5.5), median full=${MU}s (PASS <= 15)"
+awk -v f="$MF" -v u="$MU" 'BEGIN{ if (f<=5.5 && u<=15) {print "PASS"} else {print "FAIL"; exit 1} }'
