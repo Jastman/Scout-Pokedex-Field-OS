@@ -880,7 +880,7 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   <header class="hdr">
     <div class="hdr-top">
       <h1 class="px">SCOUT MK-1</h1>
-      <span class="ver px">BUILD CONSOLE v4.5</span>
+      <span class="ver px">BUILD CONSOLE v4.6</span>
     </div>
     <div class="sub">Offline field unit // Pi 5 + NVMe // no WiFi, no 4G, no accounts, no phone. Spec rev 25 &mdash; Sep 1 2026.</div>
     <div class="ss">
@@ -1957,7 +1957,76 @@ try{const q=new URLSearchParams(location.search);const oc=q.get('owner');if(oc){
 let vtaps=0,vtimer=null;
 const VERBADGE=document.querySelector('.hdr .ver');
 if(VERBADGE)VERBADGE.addEventListener('click',()=>{vtaps++;clearTimeout(vtimer);vtimer=setTimeout(()=>{vtaps=0},3000);if(vtaps>=5){vtaps=0;const p=window.prompt('Owner passphrase');if(p===OWNER_CODE){setOwner(true);if(SAVENOTE)SAVENOTE.textContent='OWNER MODE UNLOCKED - PROGRESS SAVES ON THIS DEVICE';}}});
-const save=()=>{try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){}if(SAVENOTE)SAVENOTE.textContent='PROGRESS SAVED ON THIS DEVICE - '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});};
+
+/* ---- cross-device sync: progress.json in the repo is the shared store.
+   Everyone reads it (unauthenticated GitHub API - public repo).
+   Only owner devices holding the sync token write it (token lives in this browser only). ---- */
+const SYNC_TOKEN_KEY='scout-mk1-sync-token', TS_KEY='scout-dash-v2-ts';
+const REPO_API='https://api.github.com/repos/Jastman/Scout-Pokedex-Field-OS/contents/progress.json';
+let syncToken='';try{syncToken=localStorage.getItem(SYNC_TOKEN_KEY)||''}catch(e){}
+function localTs(){try{return localStorage.getItem(TS_KEY)||''}catch(e){return ''}}
+function stampLocal(){try{localStorage.setItem(TS_KEY,new Date().toISOString())}catch(e){}}
+function b64utf8(s){return btoa(unescape(encodeURIComponent(s)))}
+function unb64(s){return decodeURIComponent(escape(atob(s.replace(/\n/g,''))))}
+function setNote(t){if(SAVENOTE)SAVENOTE.textContent=t}
+async function pullProgress(){
+  try{
+    const r=await fetch(REPO_API+'?ref=main&_='+Date.now(),{headers:{Accept:'application/vnd.github+json'}});
+    if(!r.ok)return null;
+    const j=await r.json();
+    const doc=JSON.parse(unb64(j.content));
+    return (doc&&doc.state)?doc:null;
+  }catch(e){return null}
+}
+function adoptRemote(doc){
+  state=doc.state||{};try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){}
+  if(doc.updated){try{localStorage.setItem(TS_KEY,doc.updated)}catch(e){}}
+  renderParts();renderWeeks();
+  if(isOwner)setNote('OWNER MODE - PROGRESS UPDATED FROM SYNC');
+}
+async function syncPull(){
+  const doc=await pullProgress();
+  if(!doc)return;
+  const rt=doc.updated||'', lt=localTs();
+  if(!lt||rt>=lt)adoptRemote(doc);
+  else if(isOwner&&syncToken&&lt>rt)pushProgress();
+}
+let pushTimer=null, pushing=false, pushAgain=false;
+async function pushProgress(){
+  if(!isOwner||!syncToken)return;
+  if(pushing){pushAgain=true;return}
+  pushing=true;
+  let ok=false;
+  try{
+    const H={Authorization:'Bearer '+syncToken,Accept:'application/vnd.github+json'};
+    for(let attempt=0;attempt<2&&!ok;attempt++){
+      const g=await fetch(REPO_API+'?ref=main&_='+Date.now(),{headers:H});
+      const gj=g.ok?await g.json():null;
+      const doc={updated:new Date().toISOString(),state};
+      const put=await fetch(REPO_API,{method:'PUT',headers:Object.assign({'Content-Type':'application/json'},H),body:JSON.stringify({message:'Progress sync from the build console',content:b64utf8(JSON.stringify(doc)),sha:gj?gj.sha:undefined})});
+      ok=put.ok;
+    }
+    setNote(ok?'OWNER MODE - SYNCED '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'OWNER MODE - SYNC FAILED - SAVED ON THIS DEVICE');
+  }catch(e){setNote('OWNER MODE - SYNC OFFLINE - SAVED ON THIS DEVICE')}
+  pushing=false;
+  if(pushAgain){pushAgain=false;pushProgress()}
+}
+function schedulePush(){if(!isOwner||!syncToken)return;setNote('OWNER MODE - SYNCING...');clearTimeout(pushTimer);pushTimer=setTimeout(pushProgress,3000)}
+function setupSyncHint(){if(!SAVENOTE)return;if(isOwner&&!syncToken){SAVENOTE.textContent='OWNER MODE - TAP HERE TO SET UP CROSS-DEVICE SYNC';SAVENOTE.style.cursor='pointer';SAVENOTE.style.color='var(--amber)';}}
+if(SAVENOTE)SAVENOTE.addEventListener('click',async()=>{
+  if(!isOwner||syncToken)return;
+  const t=window.prompt('Paste the GitHub sync token (fine-grained: Scout repo only, Contents read+write)');
+  if(!t)return;
+  try{
+    const r=await fetch('https://api.github.com/repos/Jastman/Scout-Pokedex-Field-OS',{headers:{Authorization:'Bearer '+t.trim(),Accept:'application/vnd.github+json'}});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    syncToken=t.trim();try{localStorage.setItem(SYNC_TOKEN_KEY,syncToken)}catch(e){}
+    SAVENOTE.style.cursor='';SAVENOTE.style.color='';
+    stampLocal();setNote('OWNER MODE - SYNC ON - PUSHING THIS DEVICE PROGRESS...');pushProgress();
+  }catch(e){window.alert('That token did not work ('+e.message+'). Check repo access + Contents permission.')}
+});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncPull()});
+const save=()=>{try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){}stampLocal();if(SAVENOTE)SAVENOTE.textContent=(isOwner?'OWNER MODE - ':'')+'PROGRESS SAVED ON THIS DEVICE - '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});schedulePush();};
 window.addEventListener('pagehide',()=>{try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){}});
 /* ---- build status strip - synced from the repo (status.json at the Pages root) ---- */
 const STATUS_FALLBACK={phase:'W1 - BENCH BRING-UP',state:'IN PROGRESS',pct:4,updated:'AUG 31 2026',detail:'Raspberry Pi OS Lite (64-bit, Trixie) is flashed and running on the Pi 5 in the Argon ONE V3 bench case (Aug 31). Next up: DSI LCD + camera preview on the bench, then the kiosk skeleton.'};
@@ -3624,7 +3693,7 @@ document.getElementById('reset').onclick=()=>{if(!isOwner){guestNote();return}if
 /* ---- spec body injection point: @@SPEC@@ replaced at build ---- */
 document.getElementById('spec-body').innerHTML=SPEC_HTML;
 
-applyOwnerUI();renderCrew();renderParts();renderWeeks();simInit();
+applyOwnerUI();setupSyncHint();renderCrew();renderParts();renderWeeks();simInit();syncPull();
 
 </script>
 <script>
