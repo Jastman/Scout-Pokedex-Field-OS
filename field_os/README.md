@@ -6,7 +6,8 @@ Trixie / Debian 13**, on a Pi 5 booting from NVMe. Headless - no desktop; the UI
 kiosk Chromium page on `cage` (single-app Wayland compositor) served from localhost.
 
 Design source of truth: `../docs/field-os-design-doc.md` (rev 11). Hardware + safety
-spec: the SPEC tab in the build console (rev 24).
+spec: the SPEC tab in the build console (rev 25). Architecture: `../docs/hardware-architecture.md`
+and `../docs/software-architecture.md` (Sep 1 review); bench gates in `tests/bench/`.
 
 ## Architecture at a glance
 

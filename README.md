@@ -34,12 +34,14 @@ A real-world Pokedex: a fully offline handheld nature scanner built for a 3-year
 - `status.json` - the build-status strip in the console header reads this file (with an embedded fallback), so editing it here updates the public dashboard: current week, state, progress %, one-line detail.
 - `field_os/` - the actual FIELD OS device software: package skeleton (`src/fieldos/`), architecture doc, and the rev 24 hard rules. Target: Raspberry Pi OS Lite (64-bit, Trixie) on the Pi 5 bench.
 - `docs/field-os-design-doc.md` - FIELD OS 1.0 UX design system (rev 11): one job per screen, tokens, screen specs.
+- `docs/hardware-architecture.md` - storage/accelerator decision, corrected mass/power/cost budgets, bus + pin map, CAD fit-check (Sep 1 architecture review).
+- `docs/software-architecture.md` - AI pipeline concurrency/scheduling plan and the ASK latency budget; bench gates live in `field_os/tests/bench/`.
 - `docs/scout-mk1-winning-prompts.md` - the exact prompts behind the marketing render set above.
 - `cad/` - the Blender sources: both .blend files, the .glb, and the parametric build script - byte-identical to what the console ships.
 - `assets/` - marketing renders and console screenshots.
 
 ## Hardware (spec)
 
-Raspberry Pi 5 + NVMe, 5" color touch LCD (viewfinder) + 5.83" B/W e-ink (card/library), dual mics, Beitian BN-880 GPS, 4x 21700 cells, 3D-printed translucent smoked-PETG shell, 60mm SCAN dome. BOM ~$375. Software: iNaturalist vision model, BirdNET, small local LLM, offline CesiumJS tiles.
+Raspberry Pi 5 + NVMe (direct on the PCIe FFC - v1 is CPU-only, decided Sep 1), 5" color LCD run non-touch (viewfinder) + 5.83" B/W e-ink (card/library), dual mics (ReSpeaker v2), Beitian BN-880 GPS, 4x 21700 cells in a crush-walled bay, 3D-printed translucent smoked-PETG shell, 60mm SCAN button. BOM ~$429 live-priced; honest mass estimate ~1.2 kg (weighted-mockup hold test gates the print). Software: species vision model + BirdNET on CPU, Qwen3 (0.6B default / 1.7B bench-gated) via llama.cpp, Piper TTS, offline CesiumJS tiles. Architecture docs: `docs/hardware-architecture.md`, `docs/software-architecture.md`.
 
 Built in public. Named SCOUT MK-1, running FIELD OS. Saved items are "Finds."

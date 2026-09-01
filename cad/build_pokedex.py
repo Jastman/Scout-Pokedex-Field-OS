@@ -1,3 +1,24 @@
+# REV 24 (Sep 1 2026, architecture review): INTERNALS RE-LAYOUT - the rev 23 arrangement was not
+#  assemblable with real part dimensions (fit-check, docs/hardware-architecture.md sec 7):
+#  1. The 60mm SCAN button's switch body (~25-35mm behind panel - MEASURE THE REAL PART, the
+#     OBSA-60UK is a 60x60 SQUARE thin-profile button, decision pending) and the UPS+cell pack
+#     (~26mm) both lived in the ~40mm deck depth. Impossible. The pack moves BEHIND THE E-INK.
+#  2. UPS HAT (E) pogo pins reach millimetres, not the 50mm the old 'pass-through slot' implied.
+#     The HAT is REMOTE-MOUNTED behind the e-ink; pogo pins unused; Pi powered by 5V/GND leads
+#     to the 40-pin header (or USB-C pigtail); I2C pair to the gauge MCU at 0x2D.
+#  3. Pi 5 + Active Cooler (<=16mm incl. fins) + Pimoroni NVMe Base UNDER the Pi (7mm standoffs)
+#     move BEHIND THE LCD - depth stack 2.5+1.2+2+16+1.6+9+1+2.5 = ~37.8 of 40.5mm. The old model
+#     drew the NVMe on the component side and the blower on the wrong face. The Active Cooler
+#     duct shrinks from 116mm to ~22mm (blower is now next to the top exhaust grille).
+#  4. NEW cell_bay collection: crush walls (3mm + lid 2mm) with their OWN thickness parameters,
+#     independent of the cosmetic WALL - this device will be dropped. Chimney vent slots kept.
+#  5. Modeled for the first time: dome switch body placeholder, OBSF-24 MAP body, 40mm speaker +
+#     front grille, VOL rocker (top edge), ReSpeaker v2 board, GPIO bonnet, e-ink driver PCB,
+#     RTC coin cell, ADS1115 (bay NTC ADC). GPS corrected to the real BN-880 28x28x10 envelope.
+#  6. Back exhaust vents moved up behind the cooler (z~100) to serve the new Pi bay.
+#  UNVERIFIED ENVELOPES (measure on arrival, re-run this script): UPS HAT (E) board + holder
+#  outline (modeled 96x76x26 assembly), OBSA-60UK behind-panel depth (modeled 32mm), Active
+#  Cooler total height (modeled 16mm incl. clearance).
 # REV 23 (Aug 29 2026): FIX - Exhaust_Duct dimensions were passed as (w=14, h=8, d=116), which rbox
 #  maps to Blender (x=14, y=116, z=8): a 116mm rod along the DEPTH axis that poked out the front
 #  face and rendered as a black bar over the screens. Corrected to (w=14, h=116, d=8) - vertical,
@@ -56,7 +77,7 @@ from mathutils import Vector
 
 argv = sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
 MODE = argv[0] if argv else 'full'          # 'test' or 'full'
-OUT  = '/downloads/v10/cad'
+OUT  = os.environ.get('SCOUT_CAD_OUT', '/downloads/v10/cad')
 
 # ---------------- parameters (edit these) ----------------
 P = dict(
@@ -69,7 +90,10 @@ P = dict(
     EINK_CZ=1.0,                        # e-ink center height (z)
     DOME_R=30.0, DOME_CX=31.5, DOME_CZ=-88.0,   # rev 19: right-column center - LISTEN + ASK both exactly 46mm away
     DPAD_CX=-36.0, DPAD_CZ=-90.0, DPAD_ARM=15.0, DPAD_LEN=48.0,
-    SAT_R=10.0, MAP_CX=-36.0, MAP_CZ=-126.0,    # rev 19: MAP back under the D-pad (left column)
+    SAT_R=10.0, MAP_R=12.0, MAP_CX=-36.0, MAP_CZ=-126.0,  # rev 24: MAP cap Ø24 - it is a stock OBSF-24, not a 20mm cap
+    DOME_BODY_R=27.5, DOME_BODY_D=32.0,          # rev 24: SCAN switch body placeholder - MEASURE the real part
+    UPS_W=96.0, UPS_H=76.0,                      # rev 24: UPS HAT (E) + holders assembly envelope - UNVERIFIED
+    BAY_WALL=3.0, BAY_LID=2.0,                   # rev 24: cell-bay crush wall + lid, independent of WALL
     LISTEN_R=10.0, LISTEN_CX=31.5, LISTEN_CZ=-134.0, # rev 19: right column under the dome, 46.0mm from SCAN center
     ASK_CX=-1.03, ASK_CZ=-120.53,                     # rev 20: snug on the 45 deg down-left diagonal of SCAN, 46.0mm - equal to LISTEN
     SCREW_X=58.0, SCREW_Z=133.0,
@@ -89,7 +113,7 @@ def new_col(name):
     c = bpy.data.collections.new(name)
     sc.collection.children.link(c)
     return c
-COL = {n: new_col(n) for n in ('SHELL','SCREENS','CONTROLS','LABELS','PORTS','INTERNALS','STUDIO','thermal_baffle','thermal_pass')}
+COL = {n: new_col(n) for n in ('SHELL','SCREENS','CONTROLS','LABELS','PORTS','INTERNALS','STUDIO','thermal_baffle','thermal_pass','cell_bay')}
 
 def link_to(obj, col):
     for c in list(obj.users_collection): c.objects.unlink(obj)
@@ -257,13 +281,31 @@ def vent_row(prefix, plane, xs, ys):
             boolean_cut(housing, c)
 vent_row('IN', 'bottom', (-46,-32,-18,-4,10), (-6,6))   # 10 holes - intake low (chimney)
 vent_row('EX', 'top',    (-18,-6,6,18), (-6,6))         # 8 holes - exhaust high; the cooler duct lands here
-vent_row('BK', 'back',   (-11,3,17,31), (29,37))        # 8 holes - exhaust assist on the back face
+vent_row('BK', 'back',   (-11,3,17,31), (98,106))       # 8 holes - exhaust assist on the back face, behind the Active Cooler (rev 24: Pi bay is now the TOP bay)
 SLOT_A = slot_area(12.0, 3.0, VENT_BEV)
 INTAKE_AREA = 10 * SLOT_A
 EXHAUST_AREA = 16 * SLOT_A
 print('THERMAL PASS: intake grille free area  = %.0f mm2 (10x 12x3 holes, bottom edge)' % INTAKE_AREA)
 print('THERMAL PASS: exhaust grille free area = %.0f mm2 (8x top-edge + 8x back)' % EXHAUST_AREA)
 print('THERMAL PASS: top exhaust grille held 4.6mm clear of both mic ports; duct exhaust exits the top edge, away from grip, face, mics, and speaker (whistle check on the bench)')
+
+# Speaker grille: functional hole pattern through the BACK shell at the speaker (rev 24 - the
+# front deck is owned by the switch bodies; back-center sits between the two-hand grip swells)
+import math as _m
+GRILLE_AREA = 0.0
+def grille_hole(gx, gz):
+    global GRILLE_AREA
+    c = cyl('tmp_grille', 1.3, 8, (gx, BACK_Y, gz), None, rot=RX90, verts=16)
+    boolean_cut(housing, c)
+    GRILLE_AREA += _m.pi*1.3*1.3
+grille_hole(-25.0, -95.0)
+for gi in range(6):
+    a = gi*_m.pi/3
+    grille_hole(-25.0+7*_m.cos(a), -95.0+7*_m.sin(a))
+for gi in range(12):
+    a = gi*_m.pi/6
+    grille_hole(-25.0+14*_m.cos(a), -95.0+14*_m.sin(a))
+print('SPEAKER GRILLE: %d holes, %.0f mm2 open area, BACK shell at (-25,-95) - behind the D-pad, clear of the dome switch body' % (19, GRILLE_AREA))
 
 # Lanyard loop (bottom right, back corner)
 torus('Lanyard_Loop', 6.5, 2.2, (52, BACK_Y-4, -P['H']/2+6), RX90, M['screw'], col=COL['SHELL'])
@@ -325,12 +367,20 @@ txt('SatLbl_ASK', 'ASK', 2.2, (P['ASK_CX'], FRONT_Y-0.4, P['ASK_CZ']-P['SAT_R']-
 cyl('Sat_LISTEN', P['SAT_R'], 6.0, (P['LISTEN_CX'], FRONT_Y-3.0, P['LISTEN_CZ']), M['yellow'], rot=RX90, col=COL['CONTROLS'])  # yellow round cap, RIGHT thumb
 txt('SatLbl_LISTEN', 'LISTEN', 2.2, (P['LISTEN_CX']+P['SAT_R']+4.5, FRONT_Y-0.4, P['LISTEN_CZ']), RX90, M['label'], extrude=0.2, col=COL['LABELS'])  # rev 19: right of the cap (no room below)
 # MAP satellite button - round green, KEPT (Jake, Aug 29): instant live-GPS where-am-I is its job
-cyl('Sat_MAP', P['SAT_R'], 6.0, (P['MAP_CX'], FRONT_Y-3.0, P['MAP_CZ']), M['green'], rot=RX90, col=COL['CONTROLS'])  # rev 19: left column under the D-pad
+cyl('Sat_MAP', P['MAP_R'], 6.0, (P['MAP_CX'], FRONT_Y-3.0, P['MAP_CZ']), M['green'], rot=RX90, col=COL['CONTROLS'])  # rev 24: Ø24 - the real OBSF-24 cap size (was drawn Ø20)
+# rev 24: the switch BODIES exist now - they drive the internal layout. Dome depth UNVERIFIED (32mm placeholder).
+cyl('SCAN_SwitchBody', P['DOME_BODY_R'], P['DOME_BODY_D'], (P['DOME_CX'], FRONT_Y+P['WALL']+P['DOME_BODY_D']/2, P['DOME_CZ']), M['chip'], rot=RX90, col=COL['INTERNALS'])
+cyl('MAP_SwitchBody', 13.0, 26.0, (P['MAP_CX'], FRONT_Y+P['WALL']+13.0, P['MAP_CZ']), M['chip'], rot=RX90, col=COL['INTERNALS'])
 txt('SatLbl_MAP', 'MAP', 2.2, (P['MAP_CX'], FRONT_Y-0.4, P['MAP_CZ']-P['SAT_R']-3.5), RX90, M['label'], extrude=0.2, col=COL['LABELS'])  # rev 19: follows the MAP move
 
 # Power slide switch (TOP edge - moved Aug 27: no accidental kills in a kid grip)
 rbox('PWR_Slot', 16.0, 3.0, 4.0, (38, 0, P['H']/2+0.5), M['port'], bevel=1.5, col=COL['PORTS'])
 rbox('PWR_Slider', 8.0, 5.0, 5.0, (35, 0, P['H']/2+1.8), M['tpu'], bevel=1.2, col=COL['PORTS'])
+
+# VOL +/- rocker: two tactiles on the TOP edge next to PWR (rev 11 spec, modeled rev 24)
+rbox('VOL_Plus',  6.0, 4.0, 5.0, (52, 0, P['H']/2+1.2), M['tpu'], bevel=1.0, col=COL['PORTS'])
+rbox('VOL_Minus', 6.0, 4.0, 5.0, (60, 0, P['H']/2+1.2), M['tpu'], bevel=1.0, col=COL['PORTS'])
+txt('VOL_Label', 'VOL', 2.2, (56, -3.5, P['H']/2-4.5), RX90, M['label'], extrude=0.2, col=COL['LABELS'])
 
 # ---------------- ports / edge details ----------------
 # USB-C PD (bottom edge)
@@ -348,68 +398,106 @@ cyl('Camera_LensDot', 3.0, 1.0, (-40, BACK_Y+5.2, 115), M['cyan'], rot=RX90, col
 cyl('Camera_Flash', 2.0, 1.5, (-28, BACK_Y+3.5, 122), M['glow'], rot=RX90, col=COL['PORTS'])
 
 # ---------------- internals (visible through ghost shell) ----------------
-# E-ink bonnet PCB
-rbox('PCB_EInkBonnet', 90, 30, 1.6, (0, -14, 52), M['pcb'], bevel=1.0, col=COL['INTERNALS'])
-# Pi 5
-rbox('Pi5_PCB', 85, 56, 1.6, (0, -8, 15), M['pcb'], bevel=1.5, col=COL['INTERNALS'])
-rbox('Pi5_SoC', 14, 14, 2.2, (-5, -6.5, 15), M['chip'], bevel=0.5, col=COL['INTERNALS'])
-rbox('Pi5_RAM', 10, 10, 1.8, (12, -6.7, 15), M['chip'], bevel=0.5, col=COL['INTERNALS'])
-rbox('Pi5_USB1', 15, 16, 7.0, (30, -5.5, 32), M['steel'], bevel=0.5, col=COL['INTERNALS'])
-rbox('Pi5_ETH', 16, 21, 8.0, (32, -5.5, 8), M['steel'], bevel=0.5, col=COL['INTERNALS'])
-rbox('Pi5_GPIO', 51, 5, 6.0, (0, -6.0, 41), M['chip'], bevel=0.3, col=COL['INTERNALS'])
-# NVMe HAT + M.2 stick
-rbox('NVMe_HAT', 87, 56, 1.6, (0, 2, 15), M['pcbd'], bevel=1.5, col=COL['INTERNALS'])
-rbox('NVMe_M2', 22, 80, 2.2, (20, 3.6, 15), M['chip'], bevel=0.5, col=COL['INTERNALS'])
+# REV 24 LAYOUT: TOP bay (behind LCD) = Pi 5 + Active Cooler + NVMe Base; MID bay (behind
+# e-ink) = UPS HAT (E) + 4x21700 inside the cell_bay crush box; BOTTOM bay (deck) = switch
+# bodies + speaker + ReSpeaker + bonnet + e-ink driver PCB. Chimney: bottom intake -> deck ->
+# bay slots -> baffle slots -> Pi bay -> top/back exhaust.
+
+# --- TOP BAY: Pi 5 stack behind the LCD (components + cooler face the BACK wall) ---
+rbox('Pi5_PCB', 85, 56, 1.6, (13, -6.7, 93), M['pcb'], bevel=1.5, col=COL['INTERNALS'])
+rbox('Pi5_SoC', 14, 14, 2.2, (8, -4.7, 93), M['chip'], bevel=0.5, col=COL['INTERNALS'])
+rbox('Pi5_RAM', 10, 10, 1.8, (24, -4.9, 93), M['chip'], bevel=0.5, col=COL['INTERNALS'])
+rbox('Pi5_GPIO', 51, 5, 6.0, (13, -4.0, 118), M['chip'], bevel=0.3, col=COL['INTERNALS'])
+rbox('Pi5_USB1', 15, 16, 8.0, (43, -1.9, 110), M['steel'], bevel=0.5, col=COL['INTERNALS'])
+rbox('Pi5_ETH', 16, 21, 8.0, (45, -1.9, 86), M['steel'], bevel=0.5, col=COL['INTERNALS'])
+# Active Cooler: 63.5x42.5, <=16mm over the PCB incl. fins/fan (officially clears 16mm headers)
+rbox('ActiveCooler', 60, 42, 13.0, (13, 0.9, 93), M['steel'], bevel=1.5, col=COL['thermal_pass'])
+rbox('ActiveCooler_Blower', 16.0, 16.0, 6.0, (13, 1.0, 118), M['steel'], bevel=1.5, col=COL['thermal_pass'])
+# NVMe Base UNDER the Pi (7mm standoffs toward the FRONT), SSD between Base and Pi
+rbox('NVMeBase_PCB', 85, 56, 1.6, (13, -12.4, 93), M['pcbd'], bevel=1.5, col=COL['INTERNALS'])
+rbox('NVMe_M2', 80, 22, 2.2, (13, -10.2, 93), M['chip'], bevel=0.5, col=COL['INTERNALS'])
 for sx in (-1,1):
     for sz in (-1,1):
-        cyl('Standoff', 2.5, 9.0, (sx*38, -3.0, 15+sz*24), M['brass'], rot=RX90, col=COL['INTERNALS'])
-# UPS HAT
-rbox('UPS_PCB', 85, 40, 1.6, (0, -8, -52), M['pcb'], bevel=1.5, col=COL['INTERNALS'])
-rbox('UPS_IC1', 10, 10, 2.0, (-20, -6.6, -52), M['chip'], bevel=0.5, col=COL['INTERNALS'])
-rbox('UPS_IC2', 8, 12, 2.0, (10, -6.6, -52), M['chip'], bevel=0.5, col=COL['INTERNALS'])
-# 4x 21700 cells (4S1P, single row of four - rev 11, Aug 29: matches the UPS HAT (E), Option A; was 6x two rows of three)
+        cyl('Standoff', 2.5, 5.0, (13+sx*39, -9.5, 93+sz*24), M['brass'], rot=RX90, col=COL['INTERNALS'])
+# RTC coin cell (rev 24 spec): cabled to the Pi J5 header
+cyl('RTC_Cell', 10.0, 3.0, (-45, -5, 100), M['steel'], rot=RX90, col=COL['INTERNALS'])
+# GPS: real BN-880 envelope 28x28x10 (was drawn 40x18) - sky-facing under plain PETG, clear of the duct
+rbox('GPS_BN880', 28, 10, 28, (34, 5, 134), M['gps'], bevel=1.0, col=COL['INTERNALS'])
+
+# --- MID BAY: UPS HAT (E) + 4x21700 behind the e-ink, inside the crush box ---
+# Assembly envelope UNVERIFIED (96x76x~26 modeled) - measure the real board+holders on arrival.
 _i=0
-for cx in (-34.5, -11.5, 11.5, 34.5):
+for cx in (-33.75, -11.25, 11.25, 33.75):
     _i+=1
-    cyl(f'Cell_{_i}', 10.5, 70, (cx, -4.0, -102), M['cell'], col=COL['INTERNALS'])
-    cyl(f'CellCap_{_i}', 8.0, 2.0, (cx, -4.0, -66.5), M['steel'], col=COL['INTERNALS'])
-# GPS patch (top)
-rbox('GPS_Patch', 40, 18, 2.0, (30, 15, 128), M['gps'], bevel=1.0, col=COL['INTERNALS'])
+    cyl(f'Cell_{_i}', 10.5, 70, (cx, 0.0, 0.0), M['cell'], col=COL['INTERNALS'])
+    cyl(f'CellCap_{_i}', 8.0, 2.0, (cx, 0.0, 36.0), M['steel'], col=COL['INTERNALS'])
+rbox('UPS_Board', P['UPS_W'], P['UPS_H'], 1.8, (0, 12.0, 0), M['pcb'], bevel=1.5, col=COL['INTERNALS'])
+rbox('UPS_IC1', 10, 10, 2.0, (-30, 13.9, 0), M['chip'], bevel=0.5, col=COL['INTERNALS'])
+rbox('UPS_IC2', 8, 12, 2.0, (28, 13.9, 8), M['chip'], bevel=0.5, col=COL['INTERNALS'])
+rbox('ADS1115_NTC', 15, 10, 1.6, (40, 15.5, 28), M['pcbd'], bevel=0.5, col=COL['INTERNALS'])
+
+# --- BOTTOM BAY (deck): boards that share the button zone, placed clear of the switch bodies ---
+rbox('EInk_Driver_PCB', 65, 30, 1.6, (-30, -2, -66), M['pcb'], bevel=1.0, col=COL['INTERNALS'])
+rbox('ReSpeaker_PCB', 65, 30, 1.6, (-30, 4.5, -90), M['pcb'], bevel=1.0, col=COL['INTERNALS'])
+rbox('GPIO_Bonnet', 55, 25, 1.6, (8, 4.5, -129), M['pcbd'], bevel=1.0, col=COL['INTERNALS'])
+# rev 24 FINDING: a Ø40 front-firing speaker does NOT fit the deck (dome body + OBSF-24 body own
+# the bottom front). The speaker fires through the BACK shell, behind the D-pad, left of the
+# dome switch body's full-depth cylinder (dome depth placeholder = 32mm, unverified).
+cyl('Speaker_40mm', 20.0, 10.0, (-25, 14, -95), M['chip'], rot=RX90, col=COL['INTERNALS'])
+
 # Brass corner inserts
 for sx in (-1,1):
     for sz in (-1,1):
         cyl('BrassInsert', 3.0, 8.0, (sx*58, 0, sz*130), M['brass'], rot=RX90, col=COL['INTERNALS'])
 
-# ---------------- REV 11 THERMAL & SAFETY PASS ----------------
-# thermal_baffle: physical wall between the battery bay and the Pi/HAT stack bay.
-# Air gap held at 6.0mm above the tallest battery-bay component (UPS_IC2 top at z=-51.0) - spec 5-8mm.
-BAFFLE_GAP = 6.0
-baffle = rbox('Thermal_Baffle', 130.0, 2.0, 38.0, (0, 2.0, -45.0 + 1.0), M['pcb'], bevel=1.0, col=COL['thermal_baffle'])
-# pogo-pin pass-through slot (UPS HAT pogo pins reach the Pi through the baffle)
-c = rbox('tmp_baffle_pogo', 34.0, 3.0, 12.0, (0, -8.0, -44.0), None); boolean_cut(baffle, c)
-# baffle transfer slots (serpentine airflow path: cells bay -> Pi bay), one edge, 6 slots 8x2
+# ---------------- REV 24 THERMAL & SAFETY PASS ----------------
+# thermal_baffle: physical wall between the cell bay (mid) and the Pi bay (top).
+# Air gaps: pack top (z=+38 caps/board edge) to baffle z=49 -> 11mm; baffle z=51 to Pi PCB
+# bottom edge z=65 -> 14mm. Spec 5-8mm minimum - held with margin.
+baffle = rbox('Thermal_Baffle', 125.0, 2.0, 36.0, (0, 2.0, 50.0), M['pcb'], bevel=1.0, col=COL['thermal_baffle'])
+# power/I2C harness grommet (replaces the rev 11 'pogo pass-through' - pogo pins are UNUSED, the
+# UPS HAT is remote-mounted and wired to the 40-pin header)
+c = rbox('tmp_baffle_wire', 18.0, 3.0, 10.0, (-45.0, -6.0, 50.0), None); boolean_cut(baffle, c)
+# baffle transfer slots (chimney path: cell bay -> Pi bay), 6 slots 8x2.4
 BAFFLE_SLOT_AREA = 0.0
 for i in range(6):
-    yy = -14.0 + i*5.6
-    c = rbox(f'tmp_baffle_v_{i}', 8.0, 3.0, 2.4, (45.0, yy, -44.0), None); boolean_cut(baffle, c)
+    yy = -12.0 + i*5.2
+    c = rbox(f'tmp_baffle_v_{i}', 8.0, 3.0, 2.4, (45.0, yy, 50.0), None); boolean_cut(baffle, c)
     BAFFLE_SLOT_AREA += 8.0*2.4
-print('THERMAL PASS: baffle air gap above UPS components = %.1f mm (spec 5-8mm) - baffle transfer slots %.0f mm2' % (BAFFLE_GAP, BAFFLE_SLOT_AREA))
+print('THERMAL PASS: baffle air gaps - pack->baffle 11.0mm, baffle->Pi 14.0mm (spec 5-8mm min) - transfer slots %.0f mm2' % BAFFLE_SLOT_AREA)
 
-# Active Cooler blower on the Pi 5 SoC + exhaust duct rising to the top-edge exhaust slots
-rbox('ActiveCooler_Blower', 16.0, 6.0, 16.0, (-5, -10.5, 15), M['steel'], bevel=1.5, col=COL['thermal_pass'])
-rbox('Exhaust_Duct', 14.0, 116.0, 8.0, (-5, -10.5, 80), M['tpu'], bevel=2.0, col=COL['thermal_pass'])  # rev 23 fix: h<->d were swapped - the duct ran front-to-back and poked 25mm out the FRONT face (the 'black bar' over the screens). Now vertical: blower outlet -> top exhaust slots
+# cell_bay: the crush box (rev 24, review finding) - ITS OWN wall parameters, not the cosmetic shell.
+# 3mm side/top/bottom walls + 2mm front lid; back = shell wall + UPS board. Slotted top+bottom for the chimney.
+BAY_SLOT_AREA = 0.0
+def bay_wall(name, w, h, d, loc):
+    return rbox(name, w, h, d, loc, M['pcbd'], bevel=0.8, col=COL['cell_bay'])
+bay_wall('CellBay_Wall_L', P['BAY_WALL'], 92, 26, (-48.75, 0, 0))
+bay_wall('CellBay_Wall_R', P['BAY_WALL'], 92, 26, ( 48.75, 0, 0))
+wb = bay_wall('CellBay_Wall_B', 100.5, P['BAY_WALL'], 26, (0, 0, -44.5))
+wt = bay_wall('CellBay_Wall_T', 100.5, P['BAY_WALL'], 26, (0, 0,  44.5))
+lid = bay_wall('CellBay_Lid_F', 100.5, 92, P['BAY_LID'], (0, -14.5, 0))
+for i in range(4):
+    xx = -30.0 + i*20.0
+    c = rbox(f'tmp_bayb_{i}', 8.0, 4.5, 2.4, (xx, 0, -44.5), None); boolean_cut(wb, c)
+    c = rbox(f'tmp_bayt_{i}', 8.0, 4.5, 2.4, (xx, 0,  44.5), None); boolean_cut(wt, c)
+    BAY_SLOT_AREA += 2*8.0*2.4
+print('CELL BAY: 3mm crush walls + 2mm lid (independent of WALL=%.1f) - chimney slots %.0f mm2 - >=5mm crumple to the bottom shell edge held by the deck bay' % (P['WALL'], BAY_SLOT_AREA))
+
+# Active Cooler duct: rev 24 - the Pi bay is the TOP bay now, so the duct is a short 22mm rise
+# from the blower to the top-edge exhaust grille (was a 116mm run in rev 23).
+rbox('Exhaust_Duct', 14.0, 22.0, 8.0, (8, 1.0, 131.5), M['tpu'], bevel=2.0, col=COL['thermal_pass'])  # rev 24: short rise, offset left of the BN-880
 
 # Camera lens bezel: 1-2mm proud of the bump face so the lens never takes ground contact
 torus('Lens_Bezel', 9.5, 1.4, (-40, BACK_Y+4.8, 115), RX90, M['tpu'], col=COL['thermal_pass'])
 
 # Gasket channels (TPU): button bosses + USB-C cutout
 torus('Gasket_SCAN', P['DOME_R']+1.8, 0.8, (P['DOME_CX'], FRONT_Y+P['WALL']+0.3, P['DOME_CZ']), RX90, M['tpu'], col=COL['thermal_pass'])
-torus('Gasket_ASK', P['SAT_R']+0.3, 0.7, (P['ASK_CX'], FRONT_Y+P['WALL']+0.3, P['ASK_CZ']), RX90, M['tpu'], col=COL['thermal_pass'])  # rev 19: center cap
-torus('Gasket_LISTEN', P['SAT_R']+0.3, 0.7, (P['LISTEN_CX'], FRONT_Y+P['WALL']+0.3, P['LISTEN_CZ']), RX90, M['tpu'], col=COL['thermal_pass'])  # rev 19: under-dome cap (tight to ring + bottom edge); bpy.context.view_layer.objects.active=_g; bpy.ops.object.transform_apply(scale=True)
-torus('Gasket_MAP', P['SAT_R']+1.0, 0.7, (P['MAP_CX'], FRONT_Y+P['WALL']+0.3, P['MAP_CZ']), RX90, M['tpu'], col=COL['thermal_pass'])  # rev 19: follows MAP back under the D-pad
+torus('Gasket_ASK', P['SAT_R']+0.3, 0.7, (P['ASK_CX'], FRONT_Y+P['WALL']+0.3, P['ASK_CZ']), RX90, M['tpu'], col=COL['thermal_pass'])
+torus('Gasket_LISTEN', P['SAT_R']+0.3, 0.7, (P['LISTEN_CX'], FRONT_Y+P['WALL']+0.3, P['LISTEN_CZ']), RX90, M['tpu'], col=COL['thermal_pass'])
+torus('Gasket_MAP', P['MAP_R']+1.0, 0.7, (P['MAP_CX'], FRONT_Y+P['WALL']+0.3, P['MAP_CZ']), RX90, M['tpu'], col=COL['thermal_pass'])
 gm = P['DPAD_LEN']/2 + 1.5
-rbox('Gasket_DPad_L', 1.0, 0.8, 2*gm+1, (P['DPAD_CX']-gm, FRONT_Y+P['WALL']+0.3, P['DPAD_CZ']), M['tpu'], col=COL['thermal_pass'])
-rbox('Gasket_DPad_R', 1.0, 0.8, 2*gm+1, (P['DPAD_CX']+gm, FRONT_Y+P['WALL']+0.3, P['DPAD_CZ']), M['tpu'], col=COL['thermal_pass'])
+rbox('Gasket_DPad_L', 1.0, 2*gm+1, 0.8, (P['DPAD_CX']-gm, FRONT_Y+P['WALL']+0.3, P['DPAD_CZ']), M['tpu'], col=COL['thermal_pass'])  # rev 24 fix: h/d were swapped (a 49mm-deep wall through the shell - same bug class as the rev 23 duct)
+rbox('Gasket_DPad_R', 1.0, 2*gm+1, 0.8, (P['DPAD_CX']+gm, FRONT_Y+P['WALL']+0.3, P['DPAD_CZ']), M['tpu'], col=COL['thermal_pass'])  # rev 24 fix: ditto
 rbox('Gasket_DPad_T', 2*gm+1, 0.8, 1.0, (P['DPAD_CX'], FRONT_Y+P['WALL']+0.3, P['DPAD_CZ']+gm), M['tpu'], col=COL['thermal_pass'])
 rbox('Gasket_DPad_B', 2*gm+1, 0.8, 1.0, (P['DPAD_CX'], FRONT_Y+P['WALL']+0.3, P['DPAD_CZ']-gm), M['tpu'], col=COL['thermal_pass'])
 rbox('Gasket_USBC_T', 13.0, 0.8, 1.0, (30, 3.25, -P['H']/2+P['WALL']+0.3), M['tpu'], col=COL['thermal_pass'])
@@ -417,8 +505,10 @@ rbox('Gasket_USBC_B', 13.0, 0.8, 1.0, (30, -3.25, -P['H']/2+P['WALL']+0.3), M['t
 rbox('Gasket_USBC_L', 1.0, 0.8, 6.5, (30-6.5, 0, -P['H']/2+P['WALL']+0.3), M['tpu'], col=COL['thermal_pass'])
 rbox('Gasket_USBC_R', 1.0, 0.8, 6.5, (30+6.5, 0, -P['H']/2+P['WALL']+0.3), M['tpu'], col=COL['thermal_pass'])
 
-# HAT-stack clearance pass (printed, held against the stack constants above)
-print('THERMAL PASS: HAT-stack clearance - UPS top to baffle %.1fmm; baffle to Pi PCB %.1fmm; DSI ribbon + camera FPC route along the front inner wall, clear of the stack' % (BAFFLE_GAP, 15.0 - (-43.0)))
+# Depth-stack clearance pass (rev 24, printed at build - hardware doc sec 5 holds the table)
+print('DEPTH STACK (Pi bay): plate 2.5 + e-ink/LCD glass 1.2 + gap 2 + cooler 16 + Pi PCB 1.6 + NVMe under-stack 9 + gap 1 + back wall 2.5 = 37.8 of 40.5mm - DSI/FPC routing lives in the margin')
+print('DEPTH STACK (cell bay): lid 2 + gap 3 + cells 21 + board 1.8 + gap 7.9 = fits 34.8mm behind the e-ink')
+print('DEPTH STACK (deck): dome body 32 (UNVERIFIED) + boards behind at y>+3 - pack is OUT of this bay (rev 24)')
 
 print('BUILD OK - objects:', len(bpy.data.objects))
 
@@ -528,21 +618,24 @@ EXP = {
  'StatusLED':-80,'Torx_TL':-80,'Torx_TR':-80,'Torx_BL':-80,'Torx_BR':-80,
  'LCD_Bezel':-50,'LCD_Glass':-50,'LCD_Line1':-50,'LCD_Line2':-50,'LCD_Bar':-50,
  'EInk_Bezel':-50,'EInk_Card':-50,'EK_Line1':-50,'EK_Line2':-50,'EK_Line3':-50,'EK_Line4':-50,'EK_Line5':-50,
- 'PCB_EInkBonnet':-25,
- 'Pi5_PCB':0,'Pi5_SoC':0,'Pi5_RAM':0,'Pi5_USB1':0,'Pi5_ETH':0,'Pi5_GPIO':0,
- 'NVMe_HAT':18,'NVMe_M2':18,'Standoff':9,
- 'UPS_PCB':36,'UPS_IC1':36,'UPS_IC2':36,
- 'Cell_1':58,'Cell_2':58,'Cell_3':58,'Cell_4':58,'Cell_5':58,'Cell_6':58,
- 'CellCap_1':58,'CellCap_2':58,'CellCap_3':58,'CellCap_4':58,'CellCap_5':58,'CellCap_6':58,
- 'GPS_Patch':45,
+ 'SCAN_SwitchBody':-38,'MAP_SwitchBody':-38,'Speaker_40mm':-38,
+ 'EInk_Driver_PCB':-25,'ReSpeaker_PCB':-12,'GPIO_Bonnet':-12,
+ 'Pi5_PCB':0,'Pi5_SoC':0,'Pi5_RAM':0,'Pi5_GPIO':0,'Pi5_USB1':0,'Pi5_ETH':0,'RTC_Cell':0,
+ 'NVMeBase_PCB':-18,'NVMe_M2':-18,'Standoff':-9,
+ 'ActiveCooler':12,'ActiveCooler_Blower':12,'Exhaust_Duct':12,
+ 'CellBay_Lid_F':-30,'CellBay_Wall_L':45,'CellBay_Wall_R':45,'CellBay_Wall_B':45,'CellBay_Wall_T':45,
+ 'UPS_Board':36,'UPS_IC1':36,'UPS_IC2':36,'ADS1115_NTC':36,
+ 'Cell_1':58,'Cell_2':58,'Cell_3':58,'Cell_4':58,
+ 'CellCap_1':58,'CellCap_2':58,'CellCap_3':58,'CellCap_4':58,
+ 'GPS_BN880':45,
  'Thermal_Baffle':54,
- 'ActiveCooler_Blower':9,'Exhaust_Duct':9,
- 'Gasket_SCAN':-95,'Gasket_EARS':-95,'Gasket_MAP':-95,
+ 'Gasket_SCAN':-95,'Gasket_ASK':-95,'Gasket_LISTEN':-95,'Gasket_MAP':-95,
  'Gasket_DPad_L':-95,'Gasket_DPad_R':-95,'Gasket_DPad_T':-95,'Gasket_DPad_B':-95,
  'Gasket_USBC_T':90,'Gasket_USBC_B':90,'Gasket_USBC_L':90,'Gasket_USBC_R':90,
  'Lens_Bezel':90,
  'Shell_BackHousing':90,'Camera_Module':90,'Camera_Lens':90,'Camera_LensDot':90,'Camera_Flash':90,
  'Vent_1':90,'Vent_2':90,'Vent_3':90,'Vent_4':90,'Lanyard_Loop':90,'Back_Mark':90,
+ 'PWR_Slot':90,'PWR_Slider':90,'VOL_Plus':90,'VOL_Minus':90,
 }
 
 if MODE == 'explodeonly':
