@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCOUT MK-1 // BUILD CONSOLE v4.7</title>
+<title>SCOUT MK-1 // BUILD CONSOLE v4.9</title>
 <style>
 @font-face{
   font-family:'PS2P';
@@ -65,7 +65,8 @@ body.locked .task,body.locked .row .cb,body.locked .guide-btn{cursor:default}
 .about-grid figure{margin:0}
 .about-grid img{width:100%;border:1px solid var(--edge);border-radius:8px;display:block}
 .about-grid figcaption{font-size:9px;color:var(--dim);margin-top:6px;letter-spacing:1px}
-.about-film{border:1px dashed var(--edge-hi);border-radius:8px;padding:26px 18px;text-align:center;color:var(--dim);font-size:11px;letter-spacing:1px;background:#080b10;margin:14px 0 4px;line-height:1.9}
+.about-film-v{width:100%;border:1px solid var(--edge-hi);border-radius:8px;display:block;background:#080b10;margin:14px 0 4px}
+.about-film-cap{font-size:9px;color:var(--dim);letter-spacing:1px;margin:6px 0 4px}
 @media (max-width:760px){.about-grid{grid-template-columns:1fr}}
 .boot{margin-top:14px;font-size:11.5px;color:var(--dim)}
 .boot b{color:var(--phos);font-weight:400}
@@ -892,7 +893,7 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   <header class="hdr">
     <div class="hdr-top">
       <h1 class="px">SCOUT MK-1</h1>
-      <span class="ver px">BUILD CONSOLE v4.7</span>
+      <span class="ver px">BUILD CONSOLE v4.9</span>
       <button class="hdr-sim px" id="console-sim-cta" type="button" title="Open the FIELD OS simulator">&#9654; SIMULATOR</button>
     </div>
     <div class="sub">Offline field unit // Pi 5 + NVMe // no WiFi, no 4G, no accounts, no phone. Spec rev 25 &mdash; Sep 1 2026.</div>
@@ -916,6 +917,10 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
 
   <nav class="tabbar">
     <button class="tabbtn on" id="tabbtn-about">&#8505; ABOUT</button>
+    <button class="tabbtn" id="tabbtn-lite">&#9672; SCOUT LITE</button>
+    <button class="tabbtn" id="tabbtn-pro">&#9670; SCOUT PRO</button>
+  </nav>
+  <nav class="tabbar dsubbar" id="pro-subbar" style="display:none">
     <button class="tabbtn" id="tabbtn-plan">&#9204; BUILD PLAN</button>
     <button class="tabbtn" id="tabbtn-parts">&#9776; PARTS LIST</button>
     <button class="tabbtn" id="tabbtn-sim">&#9654; SIMULATOR</button>
@@ -930,7 +935,7 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
       <div class="panel loop-panel">
         <img class="about-hero" src="assets/studio-hero.jpg" alt="SCOUT MK-1 handheld nature scanner - FIELD OS boot screen up top, Finds library on the e-ink below">
         <p style="margin-top:14px"><b>SCOUT MK-1 is a real-world Pokedex.</b> Point it at a plant, a bug, a bird and it tells you what you found - entirely offline: no account, no cloud, no feed. Listen to birdsong and it names the bird. Ask it questions about the thing in front of you. Every find lands on a map of your own exploring.</p>
-        <p>It is being built for a 3-year-old naturalist, and it is his dad&rsquo;s first hardware build. The whole thing happens in public - the spec, the CAD, the parts list, the mistakes, and the weekly plan are all on this console.</p>
+        <p>It is being built for a 3-year-old naturalist, and it is his dad&rsquo;s first hardware build. The whole thing happens in public - the spec, the CAD, the parts lists, the mistakes, and the weekly plans are all on this console - two tracks now: the pocket-brick SCOUT LITE first, then the full SCOUT PRO.</p>
         <p><b>Why offline:</b> the device only works if you go outside. No WiFi, no 4G, no subscription. Attention goes to the trail, not the screen.</p>
       </div>
     </section>
@@ -938,7 +943,8 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
       <div class="sec-title"><h2 class="px">THE DEVICE</h2><div class="rule"></div><span class="tag px">FIELD UNIT 01</span></div>
       <div class="panel loop-panel">
         <p>One big magenta SCAN dome a kid finds in two seconds. Two screens with one job each: a color viewfinder that wakes only while you scan, and a black-and-white e-ink screen that holds your finds. Translucent shell - the batteries and brass are the decoration. Inside: a Raspberry Pi 5 running FIELD OS, the species models living on the device itself.</p>
-        <div class="about-film" id="about-film">DEVICE FILM - IN PRODUCTION<br><span style="font-size:9px">A CINEMATIC TURNTABLE OF THE REV 24 CAD MODEL LANDS HERE. UNTIL THEN, THE LIVE 3D MODEL IS IN DESIGN SPECS &gt; CAD.</span></div>
+        <video class="about-film-v" src="assets/device-film.mp4" poster="assets/device-film-poster.jpg" autoplay muted loop playsinline></video>
+        <div class="about-film-cap">FIELD UNIT 01 - CAD REV 24, RENDERED FROM THE LIVE MODEL IN BLENDER. THE INTERACTIVE 3D VERSION IS IN DESIGN SPECS &gt; CAD.</div>
         <div class="about-grid">
           <figure><img src="assets/scan-dome-macro.jpg" alt="The 60mm SCAN dome, D-pad and satellite buttons on the translucent smoke shell"><figcaption>THE DECK - ONE SIGNATURE MOVE: THE SCAN DOME</figcaption></figure>
           <figure><img src="assets/pov-squirrel-trail.jpg" alt="Point-and-scan viewfinder locking onto an eastern gray squirrel on the trail"><figcaption>POINT-AND-SCAN ON THE TRAIL</figcaption></figure>
@@ -950,8 +956,39 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
     <section class="sec">
       <div class="sec-title"><h2 class="px">FOLLOW THE BUILD</h2><div class="rule"></div><span class="tag px">OPEN SOURCE</span></div>
       <div class="panel loop-panel">
-        <p>Everything is in the open repo: the spec, the Blender CAD sources, the parts list with buy links, and the 7-week plan being worked right now. The status strip at the top of this page syncs from the repo - what you see is where the build actually is.</p>
+        <p>Everything is in the open repo: the spec, the Blender CAD sources, the parts lists with buy links, and the build plans being worked right now. The status strip at the top of this page syncs from the repo - what you see is where the build actually is.</p>
         <p style="margin-top:10px"><a href="https://github.com/Jastman/Scout-Pokedex-Field-OS">github.com/Jastman/Scout-Pokedex-Field-OS</a> &nbsp;&middot;&nbsp; <a href="#plan">PEEK AT THE BUILD CONSOLE &#9656;</a></p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= TAB : SCOUT LITE ================= -->
+  <div class="tabpage" id="tab-lite">
+    <section class="sec" style="margin-top:0">
+      <div class="sec-title"><h2 class="px">SCOUT LITE - THE POCKET BRICK</h2><div class="rule"></div><span class="tag px">4-WEEK BUILD</span></div>
+      <div class="panel loop-panel">
+        <p><b>The brick that proves the loop.</b> Scout Lite is the same brain in a pocket brick: point it at a bug and press CAPTURE like a camera shutter - the e-ink screen on the front shows what you caught. Hold LISTEN and it names the bird. No viewfinder, no color screen, no menus. Two buttons on the top edge, camera on the back, e-ink on the front, mic and a small speaker.</p>
+        <p>It is its own build - and the stepping stone to Scout Pro. The capture-to-identify loop gets proven in the brick first; Pro inherits working code, working parts, and a working power stack. Nothing built here is thrown away.</p>
+        <p style="margin-bottom:0"><b>What drops from the Pro build:</b> the 5-inch color viewfinder and its dive animation, the 60mm SCAN dome + D-pad + ASK/MAP buttons, GPS and the offline field map, and voice ASK (the LLM ships with Pro). Everything else carries.</p>
+      </div>
+    </section>
+    <section class="sec">
+      <div class="sec-title"><h2 class="px">LITE PARTS LIST</h2><div class="rule"></div><span class="tag px" id="lite-sub-tag">$0 NEW</span></div>
+      <div class="panel">
+        <div class="parts-head"><div class="line px">NEW PARTS SUBTOTAL<b id="lite-sub-line">$0</b></div><div class="line dim">vs PRO $429 - shared bench parts cost $0 twice</div></div>
+        <div id="lite-parts"></div>
+      </div>
+    </section>
+    <section class="sec">
+      <div class="sec-title"><h2 class="px">LITE PLAN - 4 WEEKS</h2><div class="rule"></div><span class="tag px">THEN PRO</span></div>
+      <div id="lite-weeks"></div>
+    </section>
+    <section class="sec">
+      <div class="sec-title"><h2 class="px">WHAT PRO INHERITS</h2><div class="rule"></div><span class="tag px">NOTHING WASTED</span></div>
+      <div class="panel loop-panel">
+        <p><b>Software:</b> the whole FIELD OS service layer - kiosk shell, camera still pipeline, the vision model bench-gated on real hardware, BirdNET listen mode, the e-ink card daemon, the GPIO button daemon, the SQLite find log, power + thermal daemons. Pro weeks skip straight to the two-screen handoff, ASK, and the map.</p>
+        <p><b>Hardware:</b> Pi 5 + NVMe + NVMe Base, Camera Module 3, ReSpeaker mic, speaker path, the same 5.83 e-ink panel, UPS HAT + cell pack + thermal cutoff. The Lite brick stays the kid's first unit; Pro becomes the deluxe build.</p>
+        <p style="margin-bottom:0"><b>Knowledge:</b> real measured part envelopes, the print fit-check, and a kid hold test done on the light brick before the 1.2kg Pro print.</p>
       </div>
     </section>
   </div>
@@ -1575,6 +1612,39 @@ const PARTS=[
  {id:'usbenc',name:'USB3 M.2 enclosure (pairs with the AI HAT+)',mfr:'ASMedia ASM236x chipset ONLY (e.g. Unitek 10Gbps ~$21, Plugable USBC-NVME $23) - AVOID Realtek RTL9210/B',price:23,opt:true,note:'the NVMe leaves the PCIe lane to the Hailo and boots over USB3 (~400MB/s, plenty). RTL9210 has a documented unresolved Pi 5 disconnect bug (raspberrypi/linux #7080). MUST set usb_max_current_enable=1 + PSU_MAX_CURRENT=5000 in the EEPROM: the UPS HAT powers the Pi without PD negotiation, so USB boot is otherwise disabled at 600mA',links:[['BUY','https://plugable.com/products/usbc-nvme',1]]},
 ];
 
+/* ============ SCOUT LITE - PARTS (inherits bench + Pro BOM rows) ============ */
+const PARTS_LITE=[
+ {sec:'CARRIES FROM THE BENCH - $0'},
+ {id:'lite-pi5',name:'Raspberry Pi 5 (8GB)',mfr:'owned - same board, transplants from the bench',price:0,owned:true,note:'the Pro build buys nothing here either'},
+ {id:'lite-nvme',name:'NVMe SSD',mfr:'owned - models + species pack live here',price:0,owned:true,note:''},
+ {sec:'THE BRICK - NEW PARTS'},
+ {id:'lite-nvmebase',name:'NVMe adapter',mfr:'Pimoroni NVMe Base (PIM699)',price:16,note:'same part as Pro - one buy covers whichever build mounts it first',links:[['BUY','https://shop.pimoroni.com/products/nvme-base']]},
+ {id:'lite-cam',name:'Camera',mfr:'Raspberry Pi Camera Module 3 Wide (IMX708)',price:35,note:'on the BACK - point and capture, no viewfinder. Autofocus + 120deg for close-up bugs',links:[['BUY','https://www.raspberrypi.com/products/camera-module-3/']]},
+ {id:'lite-inky',name:'E-ink screen',mfr:'Waveshare 5.83inch e-Paper HAT - 648x480 B/W',price:40,note:'the ONLY screen - results, finds library, battery. Same panel Pro uses',links:[['BUY','https://www.waveshare.com/5.83inch-e-Paper-HAT.htm']]},
+ {id:'lite-mic',name:'Microphone',mfr:'Seeed ReSpeaker 2-Mics Pi HAT v2.0',price:11,note:'LISTEN = BirdNET on a 3s window; 2nd mic = wind rejection',links:[['BUY','https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/107100001/7325257']]},
+ {id:'lite-speaker',name:'Small speaker',mfr:'ReSpeaker JST speaker out first; MAX98357A + 40mm 3W as the fallback',price:10,note:'ID calls + UI bleeps + the caught-it sting. Bench loudness first (same gate as Pro W4)',links:[['BUY','https://www.adafruit.com/product/3006',1]]},
+ {id:'lite-btns',name:'2 top buttons',mfr:'Sanwa OBSF-24 (CAPTURE - camera-shutter feel) + 12mm tactile under a printed TPU cap (LISTEN)',price:8,note:'top edge, one per thumb side. That is the whole control surface',links:[['BUY','https://focusattack.com/sanwa-obsf-24mm-pushbutton-black/']]},
+ {id:'lite-bonnet',name:'GPIO breakout',mfr:'Stacking header + Adafruit GPIO Expander Bonnet',price:15,note:'e-ink + mic + 2 buttons - plenty of free pins without the dome/D-pad/GPS',links:[['BUY','https://www.adafruit.com/product/4132']]},
+ {id:'lite-cool',name:'Cooling',mfr:'Raspberry Pi Active Cooler',price:5,note:'same exhaust-path rule as Pro - modeled into the shell',links:[['BUY','https://www.raspberrypi.com/products/active-cooler/']]},
+ {id:'lite-ups',name:'Battery board',mfr:'Waveshare UPS HAT (E) - 4x21700 4S, 5V/6A, PD',price:33,note:'kept whole: the power + telemetry work carries to Pro untouched. A lighter 2-cell pack is a later option, not v1',links:[['BUY','https://www.waveshare.com/product/ups-hat-e.htm']]},
+ {id:'lite-cells',name:'Batteries',mfr:'Samsung INR21700-50E 5000mAh x4',price:30,qty:'x4',note:'matched genuine cells from a specialist store only',links:[['BUY','https://www.18650batterystore.com/products/samsung-50e']]},
+ {id:'lite-therm',name:'Bay thermistor + ADC',mfr:'10k NTC + ADS1115 at 0x48',price:12,note:'REQUIRED - the software thermal cutoff, same as Pro'},
+ {id:'lite-usbc',name:'USB-C charge port',mfr:'panel-mount pigtail to the UPS HAT',price:8,note:'bottom edge'},
+ {id:'lite-case',name:'Case print',mfr:'3D-printed brick shell - smaller than Layout A, same wall rules',price:25,note:'~120x170x45 target. Kid hold test at real weight before printing'},
+ {id:'lite-misc',name:'Misc',mfr:'standoffs, screws, wire, A2 microSD, RTC coin cell, 45W PD charger',price:30,note:'RTC keeps find dates honest offline'},
+];
+/* ============ SCOUT LITE - 4-WEEK PLAN ============ */
+const WEEKS_LITE=[
+ {wk:'L1',title:'BENCH + CAPTURE',deliv:'Press the shutter, get a name.',
+  items:['Pi 5 boots from NVMe on the Argon bench (shared with Pro W1 - mostly DONE)','CAPTURE + LISTEN wired through the bonnet, arriving as key events','Camera still -> bench-gated vision model -> species name + confidence (the same model gate as Pro: < 1.5s median on CPU)','E-ink daemon v1: the caught-it card renders on the 5.83 panel - name, confidence, danger band when it applies']},
+ {wk:'L2',title:'LISTEN + LOG',deliv:'It names the bird.',
+  items:['ReSpeaker stacked; BirdNET on mic input with confidence thresholds','LISTEN hold-to-record: rolling 3s window, top match + confidence to the e-ink','Speaker path benched (JST out vs MAX98357A fallback) + the caught-it sting','SQLite find log (no GPS yet - timestamp + species + photo still)']},
+ {wk:'L3',title:'POWER + BRICK',deliv:'Runs untethered for a day.',
+  items:['UPS HAT (E) + 4x 50E cells + bay thermistor/ADS1115 thermal cutoff','USB-C charge port; battery % on the e-ink status strip','Brick shell printed and assembled (measured envelopes first)','Field test: a real park, real bugs, real birdsong']},
+ {wk:'L4',title:'HANDOFF',deliv:'The loop is proven; Pro starts standing up.',
+  items:['Kid week: the 3-year-old runs the brick - watch what confuses him, fix it','Freeze the FIELD OS service layer as the shared codebase (lite/ + pro/ targets)','Lite findings feed Pro: vision latency numbers, e-ink refresh feel, button ergonomics','Pro W1-W3 start from working code, not from scratch']},
+];
+
 /* ============ WEEKLY PLAN (M0-M5) ============ */
 const WEEKS=[
  {wk:'W1',title:'BENCH BRING-UP',m:'MILESTONE M0',deliv:'A booting desk prototype.',
@@ -2090,10 +2160,16 @@ function setTab(name){
   if(name==='3d'){setTab('sim');simMode('3d');return}
   if(name==='cad'||name==='blueprint')name='design';
   if(name==='loop'){setTab('design');dsubShow('loop');return}
-  ['plan','parts','sim','design','lab','about'].forEach(n=>{
+  if(name==='pro')name='plan';
+  const isPro=['plan','parts','sim','design','lab'].includes(name);
+  document.getElementById('pro-subbar').style.display=isPro?'':'none';
+  document.getElementById('tabbtn-pro').classList.toggle('on',isPro);
+  track=(name==='lite')?'lite':'pro';
+  ['plan','parts','sim','design','lab','about','lite'].forEach(n=>{
     const pg=document.getElementById('tab-'+n);if(pg)pg.classList.toggle('on',name===n);
     const bt=document.getElementById('tabbtn-'+n);if(bt)bt.classList.toggle('on',name===n);
   });
+  updateStats();
   if(name==='design'){bpShow(bpView);if(window.cadInit)cadInit()}
 }
 let simView='2d';
@@ -2108,6 +2184,8 @@ function simMode(m){
   if(m==='3d'&&window.sim3dInit)sim3dInit();
 }
 document.getElementById('tabbtn-about').onclick=()=>setTab('about');
+document.getElementById('tabbtn-lite').onclick=()=>setTab('lite');
+document.getElementById('tabbtn-pro').onclick=()=>setTab('plan');
 document.getElementById('tabbtn-plan').onclick=()=>setTab('plan');
 document.getElementById('tabbtn-parts').onclick=()=>setTab('parts');
 document.getElementById('tabbtn-sim').onclick=()=>{setTab('sim');simMode(simView)};
@@ -2130,6 +2208,8 @@ document.getElementById('lab-open').onclick=()=>setTab('lab');
 function routeHash(){
   const h=location.hash;
   if(h==='#about')setTab('about');
+  if(h==='#lite')setTab('lite');
+  if(h==='#pro')setTab('plan');
   if(h==='#design')setTab('design');
   if(h==='#loop')setTab('loop');
   if(h==='#sim')setTab('sim');
@@ -2181,23 +2261,92 @@ function togglePart(item){
   if(state[item.id]&&item.group){PARTS.filter(x=>x.group===item.group&&x.id!==item.id).forEach(x=>state[x.id]=false)}
   save();renderParts();
 }
+let track='pro';
+function computeTotals(arr){
+  const counted=arr.filter(x=>x.price&&!x.owned&&!x.opt&&!x.alt);
+  const alts=arr.filter(x=>x.alt&&!x.opt);
+  let total=counted.reduce((s,x)=>s+x.price,0);
+  alts.forEach(a=>{if(state[a.id]){const prim=arr.find(x=>x.group===a.group&&!x.alt);if(prim)total=total-prim.price+a.price}});
+  let acq=0; arr.forEach(x=>{if(x.price&&!x.opt&&state[x.id])acq+=x.price});
+  const ownedAll=arr.filter(x=>x.owned);
+  const checkedCount=arr.filter(x=>x.price&&!x.opt&&!x.alt&&state[x.id]).length + alts.filter(a=>state[a.id]).length + ownedAll.filter(x=>state[x.id]).length;
+  return {acq,total,checkedCount,totalAll:counted.length+ownedAll.length};
+}
+function updateStats(){
+  const t=computeTotals(track==='lite'?PARTS_LITE:PARTS);
+  document.getElementById('st-count').innerHTML=t.checkedCount+'<small> / '+t.totalAll+'</small>';
+  document.getElementById('st-spent').textContent='$'+t.acq;
+  document.getElementById('st-rem').textContent='$'+(t.total-t.acq);
+  let wd=0, wtot=WEEKS.length;
+  if(track==='lite'){
+    wtot=WEEKS_LITE.length;
+    WEEKS_LITE.forEach((wk,i)=>{let d=0;wk.items.forEach((_,j)=>{if(state['lw'+i+'_'+j])d++});if(d===wk.items.length)wd++});
+  }else{
+    WEEKS.forEach((wk,i)=>{let d=0;wk.hw.forEach((_,j)=>{if(state['w'+i+'hw'+j])d++});wk.sw.forEach((_,j)=>{if(state['w'+i+'sw'+j])d++});if(d===wk.hw.length+wk.sw.length)wd++});
+  }
+  document.getElementById('st-weeks').innerHTML=wd+'<small> / '+wtot+'</small>';
+}
 function updateTotals(){
-  let acq=0,total=0;
-  const counted=PARTS.filter(x=>x.price&&!x.owned&&!x.opt&&!x.alt);
-  const alts=PARTS.filter(x=>x.alt&&!x.opt);
-  total=counted.reduce((s,x)=>s+x.price,0);
-  const totalCount=counted.length;
-  alts.forEach(a=>{if(state[a.id]){const prim=PARTS.find(x=>x.group===a.group&&!x.alt);total=total-prim.price+a.price}});
-  PARTS.forEach(x=>{if(x.price&&!x.opt&&state[x.id])acq+=x.price});
-  const ownedAll=PARTS.filter(x=>x.owned);
-  const checkedCount=PARTS.filter(x=>x.price&&!x.opt&&!x.alt&&state[x.id]).length + alts.filter(a=>state[a.id]).length + ownedAll.filter(x=>state[x.id]).length;
-  document.getElementById('st-count').innerHTML=checkedCount+'<small> / '+(totalCount+ownedAll.length)+'</small>';
-  document.getElementById('st-spent').textContent='$'+acq;
-  document.getElementById('st-rem').textContent='$'+(total-acq);
-  document.getElementById('sub-line').textContent='$'+acq+' / $'+total;
-  document.getElementById('sub-acq').textContent='$'+acq;
-  document.getElementById('sub-rem').textContent='$'+(total-acq);
-  document.getElementById('sub-bar').style.width=Math.round(100*acq/total)+'%';
+  const t=computeTotals(PARTS);
+  document.getElementById('sub-line').textContent='$'+t.acq+' / $'+t.total;
+  document.getElementById('sub-acq').textContent='$'+t.acq;
+  document.getElementById('sub-rem').textContent='$'+(t.total-t.acq);
+  document.getElementById('sub-bar').style.width=Math.round(100*t.acq/t.total)+'%';
+  updateStats();
+}
+function updateTotalsLite(){
+  const t=computeTotals(PARTS_LITE);
+  document.getElementById('lite-sub-line').textContent='$'+t.acq+' / $'+t.total;
+  document.getElementById('lite-sub-tag').textContent='$'+t.total+' NEW';
+  updateStats();
+}
+function renderPartsLite(){
+  const p=document.getElementById('lite-parts');p.innerHTML='';
+  for(const item of PARTS_LITE){
+    if(item.sec){const s=el('div','px',item.sec);s.style.cssText='padding:10px 16px 6px;font-size:9px;color:var(--dim);letter-spacing:1px;background:#080b10;border-bottom:1px solid var(--edge)';p.appendChild(s);continue}
+    const row=el('div','row'+(state[item.id]?' done':''));
+    const cb=el('div','cb',state[item.id]?'X':'');
+    cb.onclick=()=>{if(!isOwner){guestNote();return}state[item.id]=!state[item.id];save();renderPartsLite()};
+    const mid=el('div');
+    let badges='';
+    if(item.owned)badges+='<span class="badge b-owned">OWNED</span>';
+    if(item.qty)badges+='<span class="badge b-qty">'+item.qty+'</span>';
+    mid.appendChild(el('div','p-name',item.name+'<span class="badges">'+badges+'</span>'));
+    mid.appendChild(el('div','p-mfr',item.mfr+(item.note?' <span class="why">&mdash; '+item.note+'</span>':'')));
+    const right=el('div','p-right');
+    right.appendChild(el('div','price',item.owned?'$0':'~$'+item.price));
+    const links=el('div','links');
+    (item.links||[]).forEach(([label,url,ghost])=>{const a=el('a','buy'+(ghost?' ghost':''),label+' &#8599;');a.href=url;a.target='_blank';a.rel='noopener';links.appendChild(a)});
+    right.appendChild(links);
+    row.appendChild(cb);row.appendChild(mid);row.appendChild(right);
+    p.appendChild(row);
+  }
+  updateTotalsLite();
+}
+function renderWeeksLite(){
+  const w=document.getElementById('lite-weeks');w.innerHTML='';
+  WEEKS_LITE.forEach((wk,i)=>{
+    const card=el('div','week');
+    const h=el('div','wk-h');
+    h.appendChild(el('span','wk px',wk.wk));
+    h.appendChild(el('span','t px',wk.title));
+    h.appendChild(el('span','m px',wk.deliv));
+    card.appendChild(h);
+    let done=0;const total=wk.items.length;
+    wk.items.forEach((t,j)=>{
+      const id='lw'+i+'_'+j;
+      const task=el('div','task'+(state[id]?' done':''));
+      task.appendChild(el('div','cb',state[id]?'X':''));
+      task.appendChild(el('span',null,t));
+      task.onclick=()=>{if(!isOwner){guestNote();return}state[id]=!state[id];save();renderWeeksLite()};
+      card.appendChild(task);
+      if(state[id])done++;
+    });
+    const prog=el('div','wk-prog');const bar=el('i');bar.style.width=Math.round(100*done/total)+'%';prog.appendChild(bar);
+    card.appendChild(prog);
+    w.appendChild(card);
+  });
+  updateStats();
 }
 
 /* ---- copy buttons ---- */
@@ -2296,7 +2445,7 @@ function renderWeeks(){
     if(done===total)weeksDone++;
     w.appendChild(card);
   });
-  document.getElementById('st-weeks').innerHTML=weeksDone+'<small> / 7</small>';
+  updateStats();
 }
 
 /* ---- model crew panel ---- */
@@ -3754,7 +3903,7 @@ document.getElementById('reset').onclick=()=>{if(!isOwner){guestNote();return}if
 /* ---- spec body injection point: @@SPEC@@ replaced at build ---- */
 document.getElementById('spec-body').innerHTML=SPEC_HTML;
 
-applyOwnerUI();setupSyncHint();renderCrew();renderParts();renderWeeks();simInit();syncPull();
+applyOwnerUI();setupSyncHint();renderCrew();renderParts();renderWeeks();renderPartsLite();renderWeeksLite();simInit();syncPull();
 
 </script>
 <script>
