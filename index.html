@@ -2299,9 +2299,10 @@ function renderPartsLite(){
   const p=document.getElementById('lite-parts');p.innerHTML='';
   for(const item of PARTS_LITE){
     if(item.sec){const s=el('div','px',item.sec);s.style.cssText='padding:10px 16px 6px;font-size:9px;color:var(--dim);letter-spacing:1px;background:#080b10;border-bottom:1px solid var(--edge)';p.appendChild(s);continue}
-    const row=el('div','row'+(state[item.id]?' done':''));
-    const cb=el('div','cb',state[item.id]?'X':'');
-    cb.onclick=()=>{if(!isOwner){guestNote();return}state[item.id]=!state[item.id];save();renderPartsLite()};
+    const acq=state[item.id]||item.owned;
+    const row=el('div','row'+(acq?' done':''));
+    const cb=el('div','cb',acq?'X':'');
+    cb.onclick=()=>{if(item.owned)return;if(!isOwner){guestNote();return}state[item.id]=!state[item.id];save();renderPartsLite()};
     const mid=el('div');
     let badges='';
     if(item.owned)badges+='<span class="badge b-owned">OWNED</span>';
