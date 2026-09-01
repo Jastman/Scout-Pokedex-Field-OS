@@ -968,14 +968,14 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
       <div class="sec-title"><h2 class="px">SCOUT LITE - THE POCKET BRICK</h2><div class="rule"></div><span class="tag px">4-WEEK BUILD</span></div>
       <div class="panel loop-panel">
         <p><b>The brick that proves the loop.</b> Scout Lite is the same brain in a pocket brick: point it at a bug and press CAPTURE like a camera shutter - the e-ink screen on the front shows what you caught. Hold LISTEN and it names the bird. No viewfinder, no color screen, no menus. Two buttons on the top edge, camera on the back, e-ink on the front, mic and a small speaker.</p>
-        <p>It is its own build - and the stepping stone to Scout Pro. The capture-to-identify loop gets proven in the brick first; Pro inherits working code, working parts, and a working power stack. Nothing built here is thrown away.</p>
+        <p>It starts from the bench Jake already owns: the Pi 5, the NVMe, and the Argon ONE V3 case ARE Scout Lite. The buy list is just the senses - screen, camera, mic, speaker, buttons - plus a power bank. The capture-to-identify loop gets proven here first; when Pro stands up it gets its own Pi 5 and the Argon unit stays the brick. Nothing built here is thrown away.</p>
         <p style="margin-bottom:0"><b>What drops from the Pro build:</b> the 5-inch color viewfinder and its dive animation, the 60mm SCAN dome + D-pad + ASK/MAP buttons, GPS and the offline field map, and voice ASK (the LLM ships with Pro). Everything else carries.</p>
       </div>
     </section>
     <section class="sec">
       <div class="sec-title"><h2 class="px">LITE PARTS LIST</h2><div class="rule"></div><span class="tag px" id="lite-sub-tag">$0 NEW</span></div>
       <div class="panel">
-        <div class="parts-head"><div class="line px">NEW PARTS SUBTOTAL<b id="lite-sub-line">$0</b></div><div class="line dim">vs PRO $429 - shared bench parts cost $0 twice</div></div>
+        <div class="parts-head"><div class="line px">NEW PARTS SUBTOTAL<b id="lite-sub-line">$0</b></div><div class="line dim">vs PRO $429 - the bench you already own does the heavy lifting</div></div>
         <div id="lite-parts"></div>
       </div>
     </section>
@@ -1614,35 +1614,30 @@ const PARTS=[
 
 /* ============ SCOUT LITE - PARTS (inherits bench + Pro BOM rows) ============ */
 const PARTS_LITE=[
- {sec:'CARRIES FROM THE BENCH - $0'},
- {id:'lite-pi5',name:'Raspberry Pi 5 (8GB)',mfr:'owned - same board, transplants from the bench',price:0,owned:true,note:'the Pro build buys nothing here either'},
- {id:'lite-nvme',name:'NVMe SSD',mfr:'owned - models + species pack live here',price:0,owned:true,note:''},
- {sec:'THE BRICK - NEW PARTS'},
- {id:'lite-nvmebase',name:'NVMe adapter',mfr:'Pimoroni NVMe Base (PIM699)',price:16,note:'same part as Pro - one buy covers whichever build mounts it first',links:[['BUY','https://shop.pimoroni.com/products/nvme-base']]},
- {id:'lite-cam',name:'Camera',mfr:'Raspberry Pi Camera Module 3 Wide (IMX708)',price:35,note:'on the BACK - point and capture, no viewfinder. Autofocus + 120deg for close-up bugs',links:[['BUY','https://www.raspberrypi.com/products/camera-module-3/']]},
- {id:'lite-inky',name:'E-ink screen',mfr:'Waveshare 5.83inch e-Paper HAT - 648x480 B/W',price:40,note:'the ONLY screen - results, finds library, battery. Same panel Pro uses',links:[['BUY','https://www.waveshare.com/5.83inch-e-Paper-HAT.htm']]},
- {id:'lite-mic',name:'Microphone',mfr:'Seeed ReSpeaker 2-Mics Pi HAT v2.0',price:11,note:'LISTEN = BirdNET on a 3s window; 2nd mic = wind rejection',links:[['BUY','https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/107100001/7325257']]},
- {id:'lite-speaker',name:'Small speaker',mfr:'ReSpeaker JST speaker out first; MAX98357A + 40mm 3W as the fallback',price:10,note:'ID calls + UI bleeps + the caught-it sting. Bench loudness first (same gate as Pro W4)',links:[['BUY','https://www.adafruit.com/product/3006',1]]},
- {id:'lite-btns',name:'2 top buttons',mfr:'Sanwa OBSF-24 (CAPTURE - camera-shutter feel) + 12mm tactile under a printed TPU cap (LISTEN)',price:8,note:'top edge, one per thumb side. That is the whole control surface',links:[['BUY','https://focusattack.com/sanwa-obsf-24mm-pushbutton-black/']]},
- {id:'lite-bonnet',name:'GPIO breakout',mfr:'Stacking header + Adafruit GPIO Expander Bonnet',price:15,note:'e-ink + mic + 2 buttons - plenty of free pins without the dome/D-pad/GPS',links:[['BUY','https://www.adafruit.com/product/4132']]},
- {id:'lite-cool',name:'Cooling',mfr:'Raspberry Pi Active Cooler',price:5,note:'same exhaust-path rule as Pro - modeled into the shell',links:[['BUY','https://www.raspberrypi.com/products/active-cooler/']]},
- {id:'lite-ups',name:'Battery board',mfr:'Waveshare UPS HAT (E) - 4x21700 4S, 5V/6A, PD',price:33,note:'kept whole: the power + telemetry work carries to Pro untouched. A lighter 2-cell pack is a later option, not v1',links:[['BUY','https://www.waveshare.com/product/ups-hat-e.htm']]},
- {id:'lite-cells',name:'Batteries',mfr:'Samsung INR21700-50E 5000mAh x4',price:30,qty:'x4',note:'matched genuine cells from a specialist store only',links:[['BUY','https://www.18650batterystore.com/products/samsung-50e']]},
- {id:'lite-therm',name:'Bay thermistor + ADC',mfr:'10k NTC + ADS1115 at 0x48',price:12,note:'REQUIRED - the software thermal cutoff, same as Pro'},
- {id:'lite-usbc',name:'USB-C charge port',mfr:'panel-mount pigtail to the UPS HAT',price:8,note:'bottom edge'},
- {id:'lite-case',name:'Case print',mfr:'3D-printed brick shell - smaller than Layout A, same wall rules',price:25,note:'~120x170x45 target. Kid hold test at real weight before printing'},
- {id:'lite-misc',name:'Misc',mfr:'standoffs, screws, wire, A2 microSD, RTC coin cell, 45W PD charger',price:30,note:'RTC keeps find dates honest offline'},
+ {sec:'ALREADY ON THE BENCH - $0'},
+ {id:'lite-pi5',name:'Raspberry Pi 5 (8GB)',mfr:'owned - the bench board IS the Lite board now',price:0,owned:true,note:'one Pi does bench + field duty until Pro stands up with its own'},
+ {id:'lite-nvme',name:'NVMe SSD',mfr:'owned - models + species pack live here',price:0,owned:true,note:'already mounted on the Argon M.2 base'},
+ {id:'lite-argon',name:'Argon ONE V3 NVMe case + 27W PSU',mfr:'owned - replaces the printed shell, the cooler, and the NVMe adapter in one move',price:0,owned:true,note:'40-pin GPIO passthrough under the magnetic top cover; blower fan + RP2040 power board built in'},
+ {sec:'THE BUY LIST - SENSES + POWER'},
+ {id:'lite-cam',name:'Camera',mfr:'Raspberry Pi Camera Module 3 Wide (IMX708)',price:35,note:'AWKWARD BIT: the V3 has no camera slot - the FFC exits through the GPIO opening under the top cover and the camera mounts on the case back. Works, looks DIY',links:[['BUY','https://www.raspberrypi.com/products/camera-module-3/']]},
+ {id:'lite-inky',name:'E-ink screen',mfr:'Waveshare 5.83inch e-Paper HAT - 648x480 B/W',price:40,note:'the ONLY screen - results, finds library, status. HATs cannot stack inside the V3, so it rides off-board on the GPIO ribbon. Same panel Pro uses',links:[['BUY','https://www.waveshare.com/5.83inch-e-Paper-HAT.htm']]},
+ {id:'lite-mic',name:'Microphone',mfr:'Seeed ReSpeaker Lite - USB 2-mic array (XMOS, onboard noise suppression)',price:25,note:'USB on purpose: dodges the GPIO stack problem entirely and carries its own amp for the speaker. LISTEN = BirdNET on a 3s window',links:[['BUY','https://www.seeedstudio.com/ReSpeaker-Lite-p-5928.html']]},
+ {id:'lite-speaker',name:'Small speaker',mfr:'Adafruit Mono Enclosed Speaker 1W (JST PH)',price:4,note:'hangs off the ReSpeaker amp out. ID calls + UI bleeps + the caught-it sting',links:[['BUY','https://www.adafruit.com/product/5986']]},
+ {id:'lite-btns',name:'2 top buttons',mfr:'Sanwa OBSF-24 (CAPTURE - camera-shutter feel) + 12mm tactile under a printed TPU cap (LISTEN)',price:8,note:'wire to the color-coded 40-pin passthrough under the top cover. Adhesive pod on the top edge - no drilling the aluminum',links:[['BUY','https://focusattack.com/sanwa-obsf-24mm-pushbutton-black/']]},
+ {id:'lite-gpio',name:'GPIO ribbon + cobbler',mfr:'40-pin extension ribbon + T-cobbler breakout',price:12,note:'breaks the passthrough header out to the e-ink and the two buttons',links:[['BUY','https://www.adafruit.com/product/1988']]},
+ {id:'lite-power',name:'Power bank',mfr:'10,000mAh USB-C PD, 5V/3A (Anker Nano-class)',price:28,note:'runs Lite loads all day. 5V/5A is the Pi 5 ideal, so heavy USB peripherals stay bench-only. Clean bolt-on upgrade when it earns it: Argon PWR UPS ($75, 27W, 10Ah, built-in RTC)',links:[['BUY','https://www.argon40.com/products/argon-pwr-27w-ups-for-rpi-5-10000mah']]},
+ {id:'lite-misc',name:'Misc',mfr:'wire, JST leads, mounting tape, RTC coin cell, A2 microSD (imager backup)',price:20,note:'RTC cell keeps find dates honest offline - the Pi 5 has the RTC built in'},
 ];
 /* ============ SCOUT LITE - 4-WEEK PLAN ============ */
 const WEEKS_LITE=[
- {wk:'L1',title:'BENCH + CAPTURE',deliv:'Press the shutter, get a name.',
-  items:['Pi 5 boots from NVMe on the Argon bench (shared with Pro W1 - mostly DONE)','CAPTURE + LISTEN wired through the bonnet, arriving as key events','Camera still -> bench-gated vision model -> species name + confidence (the same model gate as Pro: < 1.5s median on CPU)','E-ink daemon v1: the caught-it card renders on the 5.83 panel - name, confidence, danger band when it applies']},
+ {wk:'L1',title:'BENCH BECOMES BRICK',deliv:'Press the shutter, get a name.',
+  items:['FIELD OS on the NVMe inside the Argon V3 - the bench unit IS the Lite unit (shared with Pro W1 - mostly DONE)','GPIO ribbon + cobbler on the 40-pin passthrough; e-ink daemon v1 renders the caught-it card on the 5.83 panel - name, confidence, danger band','Camera Module 3 still -> bench-gated vision model -> species name + confidence (same model gate as Pro: < 1.5s median on CPU)','CAPTURE + LISTEN wired to the header, arriving as key events']},
  {wk:'L2',title:'LISTEN + LOG',deliv:'It names the bird.',
-  items:['ReSpeaker stacked; BirdNET on mic input with confidence thresholds','LISTEN hold-to-record: rolling 3s window, top match + confidence to the e-ink','Speaker path benched (JST out vs MAX98357A fallback) + the caught-it sting','SQLite find log (no GPS yet - timestamp + species + photo still)']},
- {wk:'L3',title:'POWER + BRICK',deliv:'Runs untethered for a day.',
-  items:['UPS HAT (E) + 4x 50E cells + bay thermistor/ADS1115 thermal cutoff','USB-C charge port; battery % on the e-ink status strip','Brick shell printed and assembled (measured envelopes first)','Field test: a real park, real bugs, real birdsong']},
+  items:['ReSpeaker Lite on USB: BirdNET on mic input, rolling 3s window, confidence thresholds','LISTEN hold-to-record: top match + confidence to the e-ink','Speaker on the ReSpeaker amp: ID callouts + the caught-it sting (bench loudness first, same gate as Pro W4)','SQLite find log - timestamp + species + photo still (no GPS on Lite)']},
+ {wk:'L3',title:'POWER + FIELD',deliv:'Runs untethered for a day.',
+  items:['PD power bank day test: capture + listen loops on battery, real runtime numbers (dumb banks do not report % - the e-ink strip shows an honest runtime estimate)','Button pod mounted on the top edge - adhesive printed pod, no drilling','Camera mount settled on the case back (tape first, printed bracket if it earns it)','Field test: a real park, real bugs, real birdsong']},
  {wk:'L4',title:'HANDOFF',deliv:'The loop is proven; Pro starts standing up.',
-  items:['Kid week: the 3-year-old runs the brick - watch what confuses him, fix it','Freeze the FIELD OS service layer as the shared codebase (lite/ + pro/ targets)','Lite findings feed Pro: vision latency numbers, e-ink refresh feel, button ergonomics','Pro W1-W3 start from working code, not from scratch']},
+  items:['Kid week: the 3-year-old runs it - watch what confuses him, fix it','Freeze the FIELD OS service layer as the shared codebase (lite/ + pro/ targets)','Lite findings feed Pro: vision latency, e-ink refresh feel, button ergonomics, real battery runtime','Pro stands up with its OWN Pi 5 + NVMe - the Argon unit stays Scout Lite for good']},
 ];
 
 /* ============ WEEKLY PLAN (M0-M5) ============ */
@@ -2269,7 +2264,7 @@ function computeTotals(arr){
   alts.forEach(a=>{if(state[a.id]){const prim=arr.find(x=>x.group===a.group&&!x.alt);if(prim)total=total-prim.price+a.price}});
   let acq=0; arr.forEach(x=>{if(x.price&&!x.opt&&state[x.id])acq+=x.price});
   const ownedAll=arr.filter(x=>x.owned);
-  const checkedCount=arr.filter(x=>x.price&&!x.opt&&!x.alt&&state[x.id]).length + alts.filter(a=>state[a.id]).length + ownedAll.filter(x=>state[x.id]).length;
+  const checkedCount=arr.filter(x=>x.price&&!x.opt&&!x.alt&&state[x.id]).length + alts.filter(a=>state[a.id]).length + ownedAll.length;
   return {acq,total,checkedCount,totalAll:counted.length+ownedAll.length};
 }
 function updateStats(){
