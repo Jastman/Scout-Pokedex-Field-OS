@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCOUT MK-1 // BUILD CONSOLE v19</title>
+<title>SCOUT MK-1 // BUILD CONSOLE v4.7</title>
 <style>
 @font-face{
   font-family:'PS2P';
@@ -55,6 +55,18 @@ a{color:var(--hot)}
 .ss-detail{margin-top:8px;font-size:11.5px;color:var(--ink);line-height:1.5}
 .save-note{margin:-14px 2px 22px;font-size:8px;color:var(--dim);letter-spacing:1px;text-align:right}
 body.locked .task,body.locked .row .cb,body.locked .guide-btn{cursor:default}
+.hdr-sim{margin-left:auto;align-self:center;font-size:10px;color:var(--phos);border:2px solid var(--phos);background:rgba(87,247,160,.08);padding:9px 14px;border-radius:8px;cursor:pointer;letter-spacing:1px}
+.hdr-sim:hover{background:rgba(87,247,160,.18)}
+@media (max-width:640px){.hdr-sim{margin-left:0;width:100%;margin-top:10px}}
+.dsubbar{display:flex;gap:0;margin:0 0 20px;border:1px solid var(--edge-hi);background:#05070a}
+.dsub{font-size:9px;padding:10px 6px}
+.about-hero{width:100%;border:1px solid var(--edge);border-radius:8px;display:block}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 4px}
+.about-grid figure{margin:0}
+.about-grid img{width:100%;border:1px solid var(--edge);border-radius:8px;display:block}
+.about-grid figcaption{font-size:9px;color:var(--dim);margin-top:6px;letter-spacing:1px}
+.about-film{border:1px dashed var(--edge-hi);border-radius:8px;padding:26px 18px;text-align:center;color:var(--dim);font-size:11px;letter-spacing:1px;background:#080b10;margin:14px 0 4px;line-height:1.9}
+@media (max-width:760px){.about-grid{grid-template-columns:1fr}}
 .boot{margin-top:14px;font-size:11.5px;color:var(--dim)}
 .boot b{color:var(--phos);font-weight:400}
 .boot .ok{color:var(--hot)}
@@ -880,7 +892,8 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   <header class="hdr">
     <div class="hdr-top">
       <h1 class="px">SCOUT MK-1</h1>
-      <span class="ver px">BUILD CONSOLE v4.6</span>
+      <span class="ver px">BUILD CONSOLE v4.7</span>
+      <button class="hdr-sim px" id="console-sim-cta" type="button" title="Open the FIELD OS simulator">&#9654; SIMULATOR</button>
     </div>
     <div class="sub">Offline field unit // Pi 5 + NVMe // no WiFi, no 4G, no accounts, no phone. Spec rev 25 &mdash; Sep 1 2026.</div>
     <div class="ss">
@@ -899,17 +912,49 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   </div>
   <div class="save-note px" id="save-note">READ-ONLY VIEW - ONLY THE BUILDER EDITS PROGRESS</div>
 
-  <button class="sim-cta" id="console-sim-cta" type="button"><span class="px">&#9654; OPEN THE FIELD OS SIMULATOR</span><span class="sim-cta-sub">REV 25 - VIRTUAL MK-1: TWO SCREENS, ONE HANDOFF - DECK CLICKS OR KEYS 1-6 + ARROWS</span></button>
-    <button class="loop-cta" id="console-loop-cta" type="button"><span class="px">&#9673; OPEN THE FIND LOOP</span><span class="sim-cta-sub">THE INTERACTION MODEL - ONE APP, TWO DISPLAYS, ONE HANDOFF</span></button>
   </div>
 
   <nav class="tabbar">
-    <button class="tabbtn on" id="tabbtn-plan">&#9204; BUILD PLAN</button>
+    <button class="tabbtn on" id="tabbtn-about">&#8505; ABOUT</button>
+    <button class="tabbtn" id="tabbtn-plan">&#9204; BUILD PLAN</button>
     <button class="tabbtn" id="tabbtn-parts">&#9776; PARTS LIST</button>
     <button class="tabbtn" id="tabbtn-sim">&#9654; SIMULATOR</button>
     <button class="tabbtn" id="tabbtn-design">&#10022; DESIGN SPECS &amp; PHILOSOPHY</button>
   </nav>
 
+
+  <!-- ================= TAB : ABOUT ================= -->
+  <div class="tabpage on" id="tab-about">
+    <section class="sec" style="margin-top:0">
+      <div class="sec-title"><h2 class="px">WHAT IS SCOUT MK-1</h2><div class="rule"></div><span class="tag px">BUILT IN PUBLIC</span></div>
+      <div class="panel loop-panel">
+        <img class="about-hero" src="assets/studio-hero.jpg" alt="SCOUT MK-1 handheld nature scanner - FIELD OS boot screen up top, Finds library on the e-ink below">
+        <p style="margin-top:14px"><b>SCOUT MK-1 is a real-world Pokedex.</b> Point it at a plant, a bug, a bird and it tells you what you found - entirely offline: no account, no cloud, no feed. Listen to birdsong and it names the bird. Ask it questions about the thing in front of you. Every find lands on a map of your own exploring.</p>
+        <p>It is being built for a 3-year-old naturalist, and it is his dad&rsquo;s first hardware build. The whole thing happens in public - the spec, the CAD, the parts list, the mistakes, and the weekly plan are all on this console.</p>
+        <p><b>Why offline:</b> the device only works if you go outside. No WiFi, no 4G, no subscription. Attention goes to the trail, not the screen.</p>
+      </div>
+    </section>
+    <section class="sec">
+      <div class="sec-title"><h2 class="px">THE DEVICE</h2><div class="rule"></div><span class="tag px">FIELD UNIT 01</span></div>
+      <div class="panel loop-panel">
+        <p>One big magenta SCAN dome a kid finds in two seconds. Two screens with one job each: a color viewfinder that wakes only while you scan, and a black-and-white e-ink screen that holds your finds. Translucent shell - the batteries and brass are the decoration. Inside: a Raspberry Pi 5 running FIELD OS, the species models living on the device itself.</p>
+        <div class="about-film" id="about-film">DEVICE FILM - IN PRODUCTION<br><span style="font-size:9px">A CINEMATIC TURNTABLE OF THE REV 24 CAD MODEL LANDS HERE. UNTIL THEN, THE LIVE 3D MODEL IS IN DESIGN SPECS &gt; CAD.</span></div>
+        <div class="about-grid">
+          <figure><img src="assets/scan-dome-macro.jpg" alt="The 60mm SCAN dome, D-pad and satellite buttons on the translucent smoke shell"><figcaption>THE DECK - ONE SIGNATURE MOVE: THE SCAN DOME</figcaption></figure>
+          <figure><img src="assets/pov-squirrel-trail.jpg" alt="Point-and-scan viewfinder locking onto an eastern gray squirrel on the trail"><figcaption>POINT-AND-SCAN ON THE TRAIL</figcaption></figure>
+          <figure><img src="assets/golden-hour-listen.jpg" alt="ASK mode at golden hour - the e-ink card answers with an American Robin field entry"><figcaption>ASK IT ABOUT WHAT YOU JUST FOUND</figcaption></figure>
+          <figure><img src="assets/listen-dark-hero.jpg" alt="LISTEN mode after dusk - birdsong ID up top, logged field card below"><figcaption>LISTEN MODE - IT NAMES THE BIRD</figcaption></figure>
+        </div>
+      </div>
+    </section>
+    <section class="sec">
+      <div class="sec-title"><h2 class="px">FOLLOW THE BUILD</h2><div class="rule"></div><span class="tag px">OPEN SOURCE</span></div>
+      <div class="panel loop-panel">
+        <p>Everything is in the open repo: the spec, the Blender CAD sources, the parts list with buy links, and the 7-week plan being worked right now. The status strip at the top of this page syncs from the repo - what you see is where the build actually is.</p>
+        <p style="margin-top:10px"><a href="https://github.com/Jastman/Scout-Pokedex-Field-OS">github.com/Jastman/Scout-Pokedex-Field-OS</a> &nbsp;&middot;&nbsp; <a href="#plan">PEEK AT THE BUILD CONSOLE &#9656;</a></p>
+      </div>
+    </section>
+  </div>
 
   <!-- ================= TAB : PARTS CHECKLIST ================= -->
   <div class="tabpage" id="tab-parts">
@@ -929,7 +974,7 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
   </div>
 
   <!-- ================= TAB : BUILD PLAN ================= -->
-  <div class="tabpage on" id="tab-plan">
+  <div class="tabpage" id="tab-plan">
     <section class="sec" id="plan">
     <div class="sec-title"><h2 class="px">01 // WEEKLY BUILD PLAN</h2><div class="rule"></div><span class="tag px">TAP A WEEK FOR THE STEP-BY-STEP</span></div>
     <div id="weeks"></div>
@@ -943,6 +988,11 @@ pre.tok{background:#080b10;border:1px solid var(--edge-hi);padding:12px 14px;fon
 
   <!-- ================= TAB : DESIGN LANGUAGE ================= -->
   <div class="tabpage" id="tab-design">
+    <div class="dsubbar">
+      <button class="tabbtn dsub on" id="dsub-specs" type="button">&#10022; DESIGN SPECS</button>
+      <button class="tabbtn dsub" id="dsub-loop" type="button">&#9673; FIND LOOP</button>
+    </div>
+    <div id="dsub-page-specs">
     <section class="sec" style="margin-top:0">
       <div class="sec-title"><h2 class="px">THE 5 DESIGN DRIVERS</h2><div class="rule"></div><span class="tag px">JAKE - AUG 29 2026</span></div>
       <div class="panel loop-panel">
@@ -1119,14 +1169,12 @@ DONT: decorative vents, fake seams, glossy finishes, &gt;1 accent color</pre>
       <li><a href="https://www.waveshare.com/product/max-m8q-gnss-hat.htm">Waveshare MAX-M8Q GNSS HAT (HAT alt)</a></li>
       <li><a href="https://www.sparkfun.com/raspberry-pi-ai-hat-13-tops.html">Raspberry Pi AI HAT+ 13 TOPS</a></li>
     </ul>
-    <div class="note">Read-only for visitors - check-offs are owner-only. On the owner's device, checklist state saves locally (localStorage). Single file, one optional fetch (repo status.json) - same offline rules as the device.</div>
+    <div class="note">Read-only for visitors - check-offs are owner-only. On the owner's device, checklist state saves locally (localStorage). Single file, two optional fetches (repo status + shared progress) - same offline rules as the device.</div>
     <button class="reset" id="reset">RESET ALL PROGRESS</button>
   </footer>
-  </div>
+    </div>
 
-  <!-- ================= TAB : FIND LOOP (INTERACTION MODEL) ================= -->
-  <div class="tabpage" id="tab-loop">
-    <button class="backbtn" data-back="plan" type="button">&#9666; BACK TO BUILD PLAN</button>
+    <div id="dsub-page-loop" style="display:none">
     <section class="sec" style="margin-top:0">
       <div class="sec-title"><h2 class="px">INTERACTION MODEL</h2><div class="rule"></div><span class="tag px">ONE APP - TWO DISPLAYS - ONE HANDOFF</span></div>
       <div class="panel loop-panel">
@@ -1245,6 +1293,7 @@ DONT: decorative vents, fake seams, glossy finishes, &gt;1 accent color</pre>
         <p><b>The payoff is the device's biggest moment - and it is a badge system, not just a card:</b> the fanfare plays, confetti fires if the camera screen happens to be awake, and the e-ink full-refreshes the QUEST COMPLETE badge card that stays on the panel at zero power. Every finished quest mints a badge (BIRD BUDDY, WINGFINDER, FINDER...) into the BADGES tab - the badge case - alongside milestone badges (FIRST CONTACT, FIVE ALIVE, FULL HOUSE). That is the kid-facing progression loop: quests give direction, badges give the trophy shelf. The SIMULATOR tab runs all of this with honest timing.</p>
       </div>
     </section>
+    </div>
   </div>
 
   <!-- ================= TAB : SIMULATOR ================= -->
@@ -2040,7 +2089,8 @@ function setTab(name){
   if(name==='console')name='plan';
   if(name==='3d'){setTab('sim');simMode('3d');return}
   if(name==='cad'||name==='blueprint')name='design';
-  ['plan','parts','sim','design','loop','lab'].forEach(n=>{
+  if(name==='loop'){setTab('design');dsubShow('loop');return}
+  ['plan','parts','sim','design','lab','about'].forEach(n=>{
     const pg=document.getElementById('tab-'+n);if(pg)pg.classList.toggle('on',name===n);
     const bt=document.getElementById('tabbtn-'+n);if(bt)bt.classList.toggle('on',name===n);
   });
@@ -2062,13 +2112,23 @@ document.getElementById('tabbtn-parts').onclick=()=>setTab('parts');
 document.getElementById('tabbtn-sim').onclick=()=>{setTab('sim');simMode(simView)};
 document.getElementById('tabbtn-design').onclick=()=>setTab('design');
 document.getElementById('console-sim-cta').onclick=()=>{setTab('sim');simMode('2d')};
-document.getElementById('console-loop-cta').onclick=()=>setTab('loop');
+function dsubShow(k){
+  const s=document.getElementById('dsub-page-specs'), l=document.getElementById('dsub-page-loop');
+  if(s)s.style.display=(k==='loop')?'none':'';
+  if(l)l.style.display=(k==='loop')?'':'none';
+  const bs=document.getElementById('dsub-specs'), bl=document.getElementById('dsub-loop');
+  if(bs)bs.classList.toggle('on',k!=='loop');
+  if(bl)bl.classList.toggle('on',k==='loop');
+}
+document.getElementById('dsub-specs').onclick=()=>dsubShow('specs');
+document.getElementById('dsub-loop').onclick=()=>dsubShow('loop');
 document.getElementById('mode-2d').onclick=()=>simMode('2d');
 document.getElementById('mode-3d').onclick=()=>simMode('3d');
 document.querySelectorAll('.backbtn').forEach(b=>b.onclick=()=>setTab(b.dataset.back||'plan'));
 document.getElementById('lab-open').onclick=()=>setTab('lab');
 function routeHash(){
   const h=location.hash;
+  if(h==='#about')setTab('about');
   if(h==='#design')setTab('design');
   if(h==='#loop')setTab('loop');
   if(h==='#sim')setTab('sim');
