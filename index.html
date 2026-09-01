@@ -2107,6 +2107,7 @@ function simMode(m){
   if(b3)b3.classList.toggle('on',m==='3d');
   if(m==='3d'&&window.sim3dInit)sim3dInit();
 }
+document.getElementById('tabbtn-about').onclick=()=>setTab('about');
 document.getElementById('tabbtn-plan').onclick=()=>setTab('plan');
 document.getElementById('tabbtn-parts').onclick=()=>setTab('parts');
 document.getElementById('tabbtn-sim').onclick=()=>{setTab('sim');simMode(simView)};
