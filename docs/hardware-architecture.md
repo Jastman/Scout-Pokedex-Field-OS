@@ -276,12 +276,12 @@ different numbers; the review guessed $420–480. Reality with today's prices:
 | Shell print | $42 | $42–55 | mass ↑ (§3) may push quotes up |
 | Misc (incl. A2 microSD $33, RTC cell, standoffs, 45 W PD) | $35 | ~$45 | microSD alone is $33 official |
 | AI HAT+ heatsink line | $8 | **$0 in v1** | moves to the §2 upgrade path |
-| **v1 total** | **$376 claimed** | **~$423 (range ~$400–460)** | |
+| **v1 total** | **$376 claimed** | **~$429 (range ~$400–460)** | |
 | §2 upgrade path, if triggered | — | +~$100–120 | AI HAT+ $70 + pad $8 + ASM236x enclosure $21–41 |
 
-So the honest v1 number is **~$420 ±10%** — over every repo figure, under nothing the
-prior review feared only because the accelerator stays out. The three repo totals
-should be reconciled to one line: "$423 planned, tracker counts actuals."
+So the honest v1 number is **~$429 ±10%** — over every repo figure, under nothing the
+prior review feared only because the accelerator stays out. APPLIED Sep 1: the console
+tracker now carries these prices and computes $429; the three old totals are gone.
 
 ## 7. FIT-CHECK against `cad/build_pokedex.py` rev 23 — what does not fit
 
@@ -345,11 +345,22 @@ so itself) and these are the items the tolerance pass must fix, ordered by sever
     captures the cells against holder spring-out on drop, and ≥5 mm crumple gap from
     the outer shell on the bottom edge (the drop-landing face).
 
-**Net verdict for "can I print it": No — not this geometry.** Shell OUTER dimensions
-(135×290×45) survive; the internal arrangement needs one honest regen pass driven by
-the real part envelopes above (§5 depth table + finding 1's pack relocation), then the
-tolerance/snap-fit pass the repo already planned. Nothing found requires the shell to
-grow; the 45 mm depth holds IF the pack leaves the deck zone.
+**Net verdict for "can I print it": No — not the rev 23 geometry.** Shell OUTER
+dimensions (135×290×45) survive; the 45 mm depth holds IF the pack leaves the deck zone.
+
+**APPLIED Sep 1 — CAD rev 24 regenerated** (`cad/build_pokedex.py`, .blend/.glb, and the
+console's embedded copies): pack behind the e-ink inside a new `cell_bay` crush box
+(3 mm walls + 2 mm lid, own parameters), Pi + cooler + NVMe Base behind the LCD (duct
+shortened 116→22 mm), switch bodies modeled, pogo fiction deleted, GPS/MAP footprints
+corrected, VOL/speaker/ReSpeaker/bonnet/RTC/ADC modeled, back exhaust vents moved
+behind the cooler. An AABB collision pass over the internals reports ZERO overlaps.
+Two additional findings from that pass: **a Ø40 front-firing speaker cannot clear the
+dome + MAP switch bodies** — it now fires through the BACK shell behind the D-pad —
+and the D-pad side gaskets carried the same h/d dimension swap as the rev 23 duct
+(fixed). Three envelopes remain placeholders to MEASURE on arrival, flagged in the
+script: UPS HAT (E) + holders (96×76×26 modeled), 60 mm button behind-panel depth
+(32 mm modeled), Active Cooler height (16 mm modeled). The tolerance/snap-fit pass
+still stands between rev 24 and a print.
 
 ## 8. Bench procedures — the numbers only hardware can give
 

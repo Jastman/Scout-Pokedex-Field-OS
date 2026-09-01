@@ -2,6 +2,6 @@
   "phase": "W1 - BENCH BRING-UP",
   "state": "IN PROGRESS",
   "pct": 4,
-  "updated": "AUG 31 2026",
-  "detail": "Raspberry Pi OS Lite (64-bit, Trixie) is flashed and running on the Pi 5 in the Argon ONE V3 bench case (Aug 31). Next up: DSI LCD + camera preview on the bench, then the kiosk skeleton."
+  "updated": "SEP 1 2026",
+  "detail": "Raspberry Pi OS Lite (64-bit, Trixie) is flashed and running on the Pi 5 in the Argon ONE V3 bench case (Aug 31). Sep 1: full architecture review landed - spec rev 25, console v4.5, CAD rev 24 (internals re-laid-out), storage decided (v1 CPU-only, NVMe on the FFC), BOM re-priced to $429, mass corrected to ~1.2kg est. Next up: DSI LCD + camera preview on the bench, then the kiosk skeleton."
 }

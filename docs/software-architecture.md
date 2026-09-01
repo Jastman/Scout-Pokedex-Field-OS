@@ -213,7 +213,10 @@ and the kiosk exist — W4; until then it's a checklist, not a file.)
 See hardware doc §2 (gate) and §8 — fio + Hailo inference loop; owned by the hardware
 doc since the pass criterion is PCIe enumeration stability, not software scheduling.
 
-## 8. Repo conflicts this doc surfaces (fix in the console, not here)
+## 8. Repo conflicts this doc surfaced — APPLIED in the console Sep 1 (v4.5 / spec rev 25)
+
+All five items below are now fixed in the live console (parts list, guides, spec, sim
+labels); they stay here as the record of what changed and why.
 
 1. **LLM name drift**: FULL SPEC §5.3 and the W3 step-by-step guide still say
    Qwen2.5-3B-Instruct / Gemma 3 4B / Qwen2.5-1.5B. The W3 plan summary, design doc,
