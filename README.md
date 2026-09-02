@@ -45,3 +45,8 @@ A real-world Pokedex: a fully offline handheld nature scanner built for a 3-year
 Raspberry Pi 5 + NVMe (direct on the PCIe FFC - v1 is CPU-only, decided Sep 1), 5" color LCD run non-touch (viewfinder) + 5.83" B/W e-ink (card/library), dual mics (ReSpeaker v2), Beitian BN-880 GPS, 4x 21700 cells in a crush-walled bay, 3D-printed translucent smoked-PETG shell, 60mm SCAN button. BOM ~$429 live-priced; honest mass estimate ~1.2 kg (weighted-mockup hold test gates the print). Software: species vision model + BirdNET on CPU, Qwen3 (0.6B default / 1.7B bench-gated) via llama.cpp, Piper TTS, offline CesiumJS tiles. Architecture docs: `docs/hardware-architecture.md`, `docs/software-architecture.md`.
 
 Built in public. Named SCOUT MK-1, running FIELD OS. Saved items are "Finds."
+
+## Photo and font credits
+
+- `cad/lcd_viewfinder.png` (device viewfinder content in the CAD model, console 3D sim, and device film): "American robin (71307)" by Rhododendrites, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), [via Wikimedia Commons](https://commons.wikimedia.org/wiki/File:American_robin_(71307).jpg). Cropped and overlaid with the FIELD OS viewfinder HUD.
+- Boot/screen type: Press Start 2P (SIL OFL 1.1, Google Fonts).

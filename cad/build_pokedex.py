@@ -215,6 +215,35 @@ def torus(name, R, r, loc, rot, material, col=None):
     bpy.ops.object.shade_smooth()
     return o
 
+
+def img_plane(name, w, h, loc, rot, img_file, emit=0.6, col=None):
+    # image-textured plane (screen content / decals); image packed into the .blend
+    import os as _os
+    path = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), img_file)
+    img = bpy.data.images.load(path)
+    img.pack()
+    m = bpy.data.materials.new(name + '_Mat'); m.use_nodes = True
+    nt = m.node_tree; nn = nt.nodes; ll = nt.links; nn.clear()
+    out = nn.new('ShaderNodeOutputMaterial')
+    bs = nn.new('ShaderNodeBsdfPrincipled')
+    tex = nn.new('ShaderNodeTexImage'); tex.image = img
+    ll.new(tex.outputs['Color'], bs.inputs['Base Color'])
+    ll.new(tex.outputs['Color'], bs.inputs['Emission Color'])
+    bs.inputs['Emission Strength'].default_value = emit
+    bs.inputs['Roughness'].default_value = 0.35
+    ll.new(bs.outputs['BSDF'], out.inputs['Surface'])
+    mesh = bpy.data.meshes.new(name)
+    hw, hh = w/2, h/2
+    mesh.from_pydata([(-hw,0,-hh),(hw,0,-hh),(hw,0,hh),(-hw,0,hh)], [], [(0,1,2,3)])
+    uv = mesh.uv_layers.new()
+    for li, loop in enumerate(mesh.loops):
+        uv.data[li].uv = [(0,0),(1,0),(1,1),(0,1)][loop.vertex_index]
+    o = bpy.data.objects.new(name, mesh)
+    (col or sc.collection).objects.link(o)
+    o.location = loc; o.rotation_euler = rot
+    o.data.materials.append(m)
+    return o
+
 def txt(name, body, size, loc, rot, material, extrude=0.3, col=None, align='CENTER'):
     bpy.ops.object.text_add(location=loc, rotation=rot)
     o = bpy.context.object; o.name = name
@@ -312,15 +341,18 @@ torus('Lanyard_Loop', 6.5, 2.2, (52, BACK_Y-4, -P['H']/2+6), RX90, M['screw'], c
 
 # Back mark
 txt('Back_Mark', 'SCOUT  MK-1', 6.0, (0, BACK_Y+0.2, -112), RBACK, M['mark'], extrude=0.25, col=COL['LABELS'])
+# rev 25: brand badge decal on the back shell (brand/logo-badge.svg rasterized)
+img_plane('Back_Badge', 34.0, 34.0, (0, BACK_Y+0.4, -68), (0,0,math.radians(180)), 'logo_badge_decal.png', emit=0.25, col=COL['LABELS'])
 
 # ---------------- screens ----------------
 # LCD: bezel + glass + phosphor text
 rbox('LCD_Bezel', P['LCD_W']+6, P['LCD_H']+6, 4.0, (0, FRONT_Y+P['WALL']+1.5, P['LCD_CZ']), M['bezel'], bevel=3.0, col=COL['SCREENS'])
 rbox('LCD_Glass', P['LCD_W'], P['LCD_H'], 1.0, (0, FRONT_Y+P['WALL']-0.4, P['LCD_CZ']), M['lcd'], bevel=1.5, col=COL['SCREENS'])
 yt = FRONT_Y - 0.8
-txt('LCD_Line1','[ AF ]  -  CAM0 LIVE', 7.5, (0, yt, P['LCD_CZ']+6), RX90, M['phos'], extrude=0.2, col=COL['LABELS'])
-txt('LCD_Line2','VIEWFINDER - SLEEPS WHEN IDLE', 4.2, (0, yt, P['LCD_CZ']-10), RX90, M['phos'], extrude=0.2, col=COL['LABELS'])
-txt('LCD_Bar','CAMERA SCREEN - NON-TOUCH', 3.0, (0, yt, P['LCD_CZ']+30), RX90, M['phos'], extrude=0.2, col=COL['LABELS'])
+# rev 25 (Sep 2 2026, Jake): CAM 0 placeholder text is dead. Static top-screen content is only
+# ever the bootup screen or the live viewfinder - here: the viewfinder on a real robin photo
+# (cad/lcd_viewfinder.png, CC BY-SA 4.0 Rhododendrites via Wikimedia Commons - see README credits).
+img_plane('LCD_Content', P['LCD_W'], P['LCD_H'], (0, FRONT_Y+P['WALL']-1.0, P['LCD_CZ']), (0,0,0), 'lcd_viewfinder.png', emit=0.9, col=COL['SCREENS'])
 
 # E-ink: bezel + cream card + dark card text
 rbox('EInk_Bezel', P['EINK_W']+6, P['EINK_H']+6, 4.0, (0, FRONT_Y+P['WALL']+1.5, P['EINK_CZ']), M['bezel'], bevel=3.0, col=COL['SCREENS'])
