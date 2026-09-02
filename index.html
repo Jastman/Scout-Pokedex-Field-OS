@@ -10073,7 +10073,7 @@ function sim3dHud(){
  x.fillStyle='#ff5a5a';x.beginPath();x.arc(34,44,5,0,7);x.fill();
  x.font='13px monospace';x.textAlign='left';x.fillStyle='#57f7a0';
  x.fillText('REC',46,49);
- x.textAlign='right';x.fillText('CAM0 - IMX708 - '+(st==='frozen'||st==='nosubj'?'FROZEN':'LIVE'),W-28,49);
+ x.textAlign='right';x.fillText('LIVE VIEW - IMX708 - '+(st==='frozen'||st==='nosubj'?'FROZEN':'LIVE'),W-28,49);
  if(S3.det){x.fillStyle='#57f7a0';x.font='12px monospace';x.textAlign='center';x.fillText('AF LOCK - '+S3_SP[S3.det].n,W/2,44)}
  if(st==='listen'){
   x.fillStyle='#2ee6e6';x.textAlign='left';x.font='15px monospace';
