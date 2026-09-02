@@ -1,4 +1,4 @@
-# SCOUT LITE CAD - rev 1 (Sep 2 2026)
+# SCOUT LITE CAD - rev 2 (Sep 2 2026)
 # Models the REAL assembly Jake will build - no custom shell:
 #   Argon ONE V3 (NVMe model, 106x95x41mm, owned) held as a portrait brick:
 #   - FRONT (case top face): 5.83" Waveshare e-Paper HAT off-board on a printed
@@ -144,7 +144,7 @@ cyl('Power_Btn', 4, 2.5, (46, -12, -47.5), M['sanwa'], rot=(90*D2R,0,0), col=COL
 
 # ================= E-INK FRONT ASSEMBLY =================
 # printed bracket (overhangs case ~10mm each side), panel sits proud on standoffs
-rbox('EInk_Bracket', 130, 104, 4, (0, -22.5, 2), M['petg'], bevel=2.5, col=COL['EINK'])
+rbox('EInk_Bracket', 130, 104, 4, (0, -22.5, 2), M['petg'], bevel=4, col=COL['EINK'])
 # panel glass 125.4 x 99.5 x 1.2
 rbox('EInk_Panel', 125.4, 99.5, 1.2, (0, -25.6, 2), M['eink'], bevel=0.8, col=COL['EINK'])
 # active area content: dithered robin find card (119.2 x 88.3)
@@ -163,15 +163,17 @@ img_plane('Lite_Badge', 16, 16, (-38, -24.7, -40), (0,0,0),
 txt('Lite_Name', 'SCOUT LITE', 4.5, (-26, -24.7, -40), (90*D2R,0,0), M['port'], col=COL['LABELS'], align='LEFT')
 
 # ================= TOP EDGE: BUTTON POD =================
-# adhesive printed pod straddling the top edge
-rbox('Button_Pod', 62, 18, 16, (14, 0, 50), M['petg2'], bevel=3, col=COL['CONTROLS'])
-# CAPTURE: Sanwa OBSF-24 (24mm), plunger up
-cyl('Capture_Bezel', 14, 6, (28, 0, 55), M['sanwa'], col=COL['CONTROLS'])
-cyl('Capture_Button', 12, 7, (28, 0, 56.5), M['sanwa'], col=COL['CONTROLS'])
-# LISTEN: 12mm tactile under printed TPU cap
-cyl('Listen_Cap', 6, 6, (2, 0, 55), M['tpu'], col=COL['CONTROLS'])
-txt('Capture_Label', 'CAPTURE', 3.2, (28, -9.2, 50), (90*D2R,0,0), M['phos'], col=COL['LABELS'])
-txt('Listen_Label', 'LISTEN', 3.2, (2, -9.2, 50), (90*D2R,0,0), M['phos'], col=COL['LABELS'])
+# rev 2: adhesive printed pod straddling the top edge. Shifted left to clear the
+# x=+42 strap rail, deepened to 30mm so the 28mm OBSF-24 bezel is fully contained,
+# buttons raised to sit ON the pod face (they were sunk inside the housing).
+rbox('Button_Pod', 62, 18, 30, (6, 0, 50), M['petg2'], bevel=4.5, col=COL['CONTROLS'])
+# CAPTURE: Sanwa OBSF-24 (24mm hole, 28mm bezel OD), plunger up, on the pod face (pod top z=59)
+cyl('Capture_Bezel', 14, 6, (20, 0, 62), M['sanwa'], col=COL['CONTROLS'])
+cyl('Capture_Button', 12, 7, (20, 0, 66.5), M['sanwa'], col=COL['CONTROLS'])
+# LISTEN: 12mm tactile under printed TPU cap, on the pod face
+cyl('Listen_Cap', 6, 6, (-2, 0, 62), M['tpu'], col=COL['CONTROLS'])
+txt('Capture_Label', 'CAPTURE', 3.2, (20, -15.2, 50), (90*D2R,0,0), M['phos'], col=COL['LABELS'])
+txt('Listen_Label', 'LISTEN', 3.2, (-2, -15.2, 50), (90*D2R,0,0), M['phos'], col=COL['LABELS'])
 
 # ================= LEFT EDGE: RESPEAKER LITE =================
 # board 86 long (z) x 35 (y) x 8 (x), mics on its top edge
