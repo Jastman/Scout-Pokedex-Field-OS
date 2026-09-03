@@ -48,7 +48,7 @@ two displays, one handoff: scan on the color screen, the find lands on e-ink.
 
 ## The family
 
-SCOUT LITE comes first: a pocket brick with two top buttons (CAPTURE and LISTEN),
+SCOUT MINI comes first: a pocket brick with two top buttons (CAPTURE and LISTEN),
 a camera on the back, one e-ink screen on the front, a mic and a small speaker.
 No viewfinder - point and capture; the screen shows what you caught. It proves
 the capture-to-identify loop in about 4 weeks, then SCOUT PRO (the dual-screen

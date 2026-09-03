@@ -1,4 +1,4 @@
-# SCOUT LITE CAD - rev 2 (Sep 2 2026)
+# SCOUT MINI CAD - rev 2 (Sep 2 2026)
 # Models the REAL assembly Jake will build - no custom shell:
 #   Argon ONE V3 (NVMe model, 106x95x41mm, owned) held as a portrait brick:
 #   - FRONT (case top face): 5.83" Waveshare e-Paper HAT off-board on a printed
@@ -158,9 +158,9 @@ for sx in (-58, 58):
     for sz in (-44, 48):
         cyl('Bracket_Screw', 1.6, 2, (sx, -26.2, sz), M['port'], rot=(90*D2R,0,0), col=COL['EINK'])
 # brand badge decal on the bracket chin
-img_plane('Lite_Badge', 16, 16, (-38, -24.7, -40), (0,0,0),
+img_plane('Mini_Badge', 16, 16, (-38, -24.7, -40), (0,0,0),
           os.path.join(HERE,'logo_badge_decal.png'), emit=0.4, col=COL['LABELS'])
-txt('Lite_Name', 'SCOUT LITE', 4.5, (-26, -24.7, -40), (90*D2R,0,0), M['port'], col=COL['LABELS'], align='LEFT')
+txt('Mini_Name', 'SCOUT MINI', 4.5, (-26, -24.7, -40), (90*D2R,0,0), M['port'], col=COL['LABELS'], align='LEFT')
 
 # ================= TOP EDGE: BUTTON POD =================
 # rev 2: adhesive printed pod straddling the top edge. Shifted left to clear the
@@ -202,6 +202,6 @@ for sx in (-42, 42):
 rbox('Speaker', 17, 70, 30, (54.5, 0, -12), M['spk'], bevel=3, col=COL['AUDIO'])
 
 # ================= SAVE =================
-out = os.path.join(HERE, 'scout-lite-assembly.blend')
+out = os.path.join(HERE, 'scout-mini-assembly.blend')
 bpy.ops.wm.save_as_mainfile(filepath=out)
-print('LITE BUILD OK ->', out)
+print('MINI BUILD OK ->', out)

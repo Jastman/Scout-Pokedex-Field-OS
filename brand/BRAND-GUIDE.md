@@ -1,6 +1,6 @@
 # SCOUT / FIELD OS - Brand Guide (v2, Sep 2 2026: SOLARPUNK)
 
-ONE brand system covers both devices in the family: SCOUT LITE (the pocket brick)
+ONE brand system covers both devices in the family: SCOUT MINI (the pocket brick)
 and SCOUT PRO (the full field unit, f.k.a. MK-1). Same marks, same palette, same
 voice - the devices differ in hardware, never in identity.
 
