@@ -7,6 +7,11 @@ and logs every find to a map of your own exploring.
 **Who it is for:** Built for a 3-year-old naturalist. Also: a first hardware build
 for his dad, built entirely in public.
 
+**Design language:** Solarpunk field journal. Golden-hour light, botanical
+greens, warm paper; cyan holographic scan arcs over real nature. The device
+itself keeps a phosphor-terminal LCD and a 1-bit e-ink screen - modern guts,
+honest retro exterior. Brand guide: `../brand/BRAND-GUIDE.md`.
+
 **Status:** Week 1 of 7 - bench bring-up in progress (as of Sep 1, 2026). Spec rev
 25, CAD rev 24. Live status: https://jastman.github.io/Scout-Pokedex-Field-OS/
 

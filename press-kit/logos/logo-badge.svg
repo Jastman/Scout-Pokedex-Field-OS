@@ -1,28 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="SCOUT field badge">
   <rect width="240" height="240" fill="none"/>
-  <circle cx="120" cy="120" r="114" fill="none" stroke="#57f7a0" stroke-width="6"/>
   <g>
-    <line x1="120.0" y1="25.0" x2="120.0" y2="10.0" stroke="#57f7a0" stroke-width="5" stroke-linecap="round"/>
-    <line x1="169.5" y1="34.3" x2="174.2" y2="26.0" stroke="#57f7a0" stroke-width="3.5" stroke-linecap="round"/>
-    <line x1="205.7" y1="70.5" x2="214.0" y2="65.7" stroke="#57f7a0" stroke-width="3.5" stroke-linecap="round"/>
-    <line x1="215.0" y1="120.0" x2="230.0" y2="120.0" stroke="#57f7a0" stroke-width="5" stroke-linecap="round"/>
-    <line x1="205.7" y1="169.5" x2="214.0" y2="174.2" stroke="#57f7a0" stroke-width="3.5" stroke-linecap="round"/>
-    <line x1="169.5" y1="205.7" x2="174.2" y2="214.0" stroke="#57f7a0" stroke-width="3.5" stroke-linecap="round"/>
-    <line x1="120.0" y1="215.0" x2="120.0" y2="230.0" stroke="#57f7a0" stroke-width="5" stroke-linecap="round"/>
-    <line x1="70.5" y1="205.7" x2="65.7" y2="214.0" stroke="#57f7a0" stroke-width="3.5" stroke-linecap="round"/>
-    <line x1="34.3" y1="169.5" x2="26.0" y2="174.3" stroke="#57f7a0" stroke-width="3.5" stroke-linecap="round"/>
-    <line x1="25.0" y1="120.0" x2="10.0" y2="120.0" stroke="#57f7a0" stroke-width="5" stroke-linecap="round"/>
-    <line x1="34.3" y1="70.5" x2="26.0" y2="65.7" stroke="#57f7a0" stroke-width="3.5" stroke-linecap="round"/>
-    <line x1="70.5" y1="34.3" x2="65.7" y2="26.0" stroke="#57f7a0" stroke-width="3.5" stroke-linecap="round"/></g>
-  <text x="75.8" y="71.0" transform="rotate(-42.0 75.8 71.0)" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="38" fill="#57f7a0" stroke="#57f7a0" stroke-width="0.8">S</text>
-  <text x="96.3" y="58.4" transform="rotate(-21.0 96.3 58.4)" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="38" fill="#57f7a0" stroke="#57f7a0" stroke-width="0.8">C</text>
-  <text x="120.0" y="54.0" transform="rotate(0.0 120.0 54.0)" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="38" fill="#57f7a0" stroke="#57f7a0" stroke-width="0.8">O</text>
-  <text x="143.7" y="58.4" transform="rotate(21.0 143.7 58.4)" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="38" fill="#57f7a0" stroke="#57f7a0" stroke-width="0.8">U</text>
-  <text x="164.2" y="71.0" transform="rotate(42.0 164.2 71.0)" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="38" fill="#57f7a0" stroke="#57f7a0" stroke-width="0.8">T</text>
-  <circle cx="120" cy="127" r="30" fill="#ff3d9a"/>
-  <circle cx="120" cy="127" r="39" fill="none" stroke="#ff3d9a" stroke-width="5"/>
-  <circle cx="110" cy="117" r="6" fill="#ffffff" opacity="0.9"/>
-  <path d="M40,121 L41.8,125.2 L46,127 L41.8,128.8 L40,133 L38.2,128.8 L34,127 L38.2,125.2 Z" fill="#ffc857"/>
-  <path d="M200,121 L201.8,125.2 L206,127 L201.8,128.8 L200,133 L198.2,128.8 L194,127 L198.2,125.2 Z" fill="#ffc857"/>
-  <text x="120" y="202" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="19" letter-spacing="5" fill="#ffc857">FIELD OS</text>
+    <line x1="120.0" y1="4.0" x2="120.0" y2="-12.0" stroke="#1E4D33" stroke-width="5" stroke-linecap="round"/>
+    <line x1="178.0" y1="19.5" x2="183.0" y2="10.9" stroke="#1E4D33" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="220.5" y1="62.0" x2="229.1" y2="57.0" stroke="#1E4D33" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="236.0" y1="120.0" x2="252.0" y2="120.0" stroke="#1E4D33" stroke-width="5" stroke-linecap="round"/>
+    <line x1="220.5" y1="178.0" x2="229.1" y2="183.0" stroke="#1E4D33" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="178.0" y1="220.5" x2="183.0" y2="229.1" stroke="#1E4D33" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="120.0" y1="236.0" x2="120.0" y2="252.0" stroke="#1E4D33" stroke-width="5" stroke-linecap="round"/>
+    <line x1="62.0" y1="220.5" x2="57.0" y2="229.1" stroke="#1E4D33" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="19.5" y1="178.0" x2="10.9" y2="183.0" stroke="#1E4D33" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="4.0" y1="120.0" x2="-12.0" y2="120.0" stroke="#1E4D33" stroke-width="5" stroke-linecap="round"/>
+    <line x1="19.5" y1="62.0" x2="10.9" y2="57.0" stroke="#1E4D33" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="62.0" y1="19.5" x2="57.0" y2="10.9" stroke="#1E4D33" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+  <circle cx="120" cy="120" r="112" fill="#F7F0DC" stroke="#1E4D33" stroke-width="7"/>
+  <circle cx="120" cy="120" r="98" fill="none" stroke="#1E4D33" stroke-width="2"/>
+  <text x="77.2" y="72.4" transform="rotate(-42.0 77.2 72.4)" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="34" fill="#1E4D33" stroke="#1E4D33" stroke-width="0.8">S</text>
+  <text x="97.1" y="60.3" transform="rotate(-21.0 97.1 60.3)" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="34" fill="#1E4D33" stroke="#1E4D33" stroke-width="0.8">C</text>
+  <text x="120.0" y="56.0" transform="rotate(0.0 120.0 56.0)" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="34" fill="#1E4D33" stroke="#1E4D33" stroke-width="0.8">O</text>
+  <text x="142.9" y="60.3" transform="rotate(21.0 142.9 60.3)" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="34" fill="#1E4D33" stroke="#1E4D33" stroke-width="0.8">U</text>
+  <text x="162.8" y="72.4" transform="rotate(42.0 162.8 72.4)" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="34" fill="#1E4D33" stroke="#1E4D33" stroke-width="0.8">T</text>
+  <circle cx="120" cy="128" r="28" fill="#E83E8C"/>
+  <circle cx="120" cy="128" r="36" fill="none" stroke="#E83E8C" stroke-width="4.5"/>
+  <circle cx="110" cy="118" r="5.5" fill="#ffffff" opacity="0.9"/>
+  <path d="M52,122 L53.8,126.2 L58,128 L53.8,129.8 L52,134 L50.2,129.8 L46,128 L50.2,126.2 Z" fill="#C97B12"/>
+  <path d="M188,122 L189.8,126.2 L194,128 L189.8,129.8 L188,134 L186.2,129.8 L182,128 L186.2,126.2 Z" fill="#C97B12"/>
+  <text x="120" y="200" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="17" letter-spacing="5" fill="#1E4D33">FIELD OS</text>
 </svg>

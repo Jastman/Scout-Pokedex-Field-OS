@@ -50,3 +50,4 @@ Built in public. Named SCOUT MK-1, running FIELD OS. Saved items are "Finds."
 
 - `cad/lcd_viewfinder.png` (device viewfinder content in the CAD model, console 3D sim, and device film): "American robin (71307)" by Rhododendrites, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), [via Wikimedia Commons](https://commons.wikimedia.org/wiki/File:American_robin_(71307).jpg). Cropped and overlaid with the FIELD OS viewfinder HUD.
 - Boot/screen type: Press Start 2P (SIL OFL 1.1, Google Fonts).
+- `assets/about-hero-solarpunk.jpg` and `assets/social-preview.png`: painterly solarpunk brand-world art, AI-generated for the project (Sep 2, 2026).
